@@ -1,4 +1,7 @@
-# Git aliases.
+# [user] and [credential] sections omitted;
+# [credential] section is added by `gh auth login`
+[init]
+	defaultBranch = main
 [alias]
 	co = checkout
 	br = branch

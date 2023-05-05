@@ -1,2 +1,4 @@
+# This allows us to use the up/down arrows to search through command history
+# when using bash.
 "\e[A": history-search-backward
 "\e[B": history-search-forward

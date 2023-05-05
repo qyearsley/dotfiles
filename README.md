@@ -8,11 +8,11 @@ I try to keep these minimal and well-documented.
 A list of useful CLI packages to consider installing on a new system,
 include:
 
-- ack (can replace grep)
-- atool (can replace tar)
 - neovim (can replace vim)
+- zsh (can replace bash), check out https://ohmyz.sh/
 - tmux (terminal multiplexer)
 - git (version control)
-- git-extras (extxra tools for git)
+- git-extras (extra tools for git)
 - gh (helpers for github)
-- zsh (can replace bash)
+- ack (can replace grep)
+- atool (can replace tar)
