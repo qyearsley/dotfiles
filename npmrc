@@ -1,0 +1,20 @@
+# NPM configuration file
+# Global settings for npm
+
+# Set default registry
+registry=https://registry.npmjs.org/
+
+# Save exact version numbers in package.json
+save-exact=true
+
+# Don't show progress bar (cleaner output)
+progress=false
+
+# Audit settings
+audit-level=moderate
+
+# Fund settings (disable funding messages)
+fund=false
+
+# Update settings
+update-notifier=false 
