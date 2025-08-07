@@ -1,9 +1,11 @@
 # See https://ohmyz.sh/.
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export ZSH_COMPDUMP="$HOME/.cache/zsh/.zcompdump-$HOST-$ZSH_VERSION"
+mkdir -p $HOME/.cache/zsh/
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="clean"
+ZSH_THEME="minimal"
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
 plugins=(git)
@@ -35,12 +37,6 @@ alias mkdir="mkdir -p"  # Create parent directories
 alias df="df -h"  # Human readable sizes
 alias du="du -h"  # Human readable sizes
 alias free="free -h"  # Human readable sizes
-
-# Network
-alias myip="curl -s https://ipinfo.io/ip"
-alias localip="ip route get 1.1.1.1 | awk '{print \$7}'"
-alias ports="netstat -tulanp"
-alias ping="ping -c 5"
 
 # Git shortcuts (in addition to oh-my-zsh git plugin)
 alias gs="git status"

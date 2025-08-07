@@ -9,7 +9,6 @@
 set nocompatible  " Use Vim settings, not Vi
 set encoding=utf-8
 set fileencoding=utf-8
-set termencoding=utf-8
 
 " Indentation
 set tabstop=4      " number of visual spaces per TAB
@@ -21,7 +20,6 @@ set smartindent    " smart autoindent
 
 " Display
 set number         " show line numbers
-set relativenumber " show relative line numbers
 set showmatch      " show matching brackets when text indicator is over them
 set hlsearch       " highlight all matches on previous search pattern
 set incsearch      " show search matches incrementally
@@ -80,8 +78,8 @@ nnoremap <leader><CR> :nohlsearch<CR>
 
 " Quick file operations (using built-in features)
 nnoremap <leader>e :Explore<CR>
-nnoremap <leader>f :find 
-nnoremap <leader>t :tag 
+nnoremap <leader>f :find
+nnoremap <leader>t :tag
 
 " Git operations (using terminal)
 nnoremap <leader>gs :!git status<CR>
@@ -111,13 +109,13 @@ set gdefault
 " ============================================================================
 " COLOR SCHEME
 " ============================================================================
-set background=dark
+set background=light
 " Use built-in color schemes
 if has('termguicolors')
     set termguicolors
 endif
 " You can change this to any built-in scheme: desert, slate, murphy, etc.
-colorscheme desert
+colorscheme quiet
 
 " ============================================================================
 " FILE TYPE SPECIFIC SETTINGS
