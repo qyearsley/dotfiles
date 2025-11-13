@@ -1,0 +1,28 @@
+#!/bin/zsh
+# Convert markdown file to RTF and copy to clipboard (macOS only)
+# Requires: pandoc
+#
+# Usage:
+#   md2rtf INPUT_DOC
+#   cat INPUT_DOC | md2rtf
+
+# Check if running on macOS
+if [[ "$(uname)" != "Darwin" ]]; then
+  echo "Error: This function requires macOS (uses textutil and pbcopy)"
+  return 1
+fi
+
+if [[ -n "$1" ]]; then
+  # File argument provided
+  cat "$1" | \
+    pandoc --from markdown --to html | \
+    textutil -convert rtf -stdin -stdout -format html | \
+    pbcopy -Prefer rtf
+else
+  # Read from stdin
+  pandoc --from markdown --to html | \
+    textutil -convert rtf -stdin -stdout -format html | \
+    pbcopy -Prefer rtf
+fi
+
+echo "Markdown converted to RTF and copied to clipboard"

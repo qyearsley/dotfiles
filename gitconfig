@@ -6,4 +6,8 @@
 	co = checkout
 	br = branch
 	ci = commit
+	st = status -sb
+	nb = checkout -b
+	sw = switch
+	short = rev-parse --short=12
 	st = status

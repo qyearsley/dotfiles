@@ -1,0 +1,65 @@
+# Merge main branch into all local branches.
+# Fetches latest main, then merges it into all local branches.
+# Usage: git-merge-all [--push]
+#   --push: Push each branch to origin after merging
+function git-merge-all() {
+  local base_branch="main"
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+  local should_push=false
+
+  # Parse arguments
+  if [[ "$1" == "--push" ]]; then
+    should_push=true
+  fi
+
+  # Check for uncommitted changes.
+  if [[ -n "$(git status --porcelain)" ]]; then
+    echo "Aborting: You have uncommitted changes on branch '$current_branch'. Please commit or stash them first."
+    return 1
+  fi
+
+  echo "Fetching the latest from origin..."
+  git fetch origin "$base_branch":"$base_branch"
+
+  echo "Updating local '$base_branch' branch..."
+  git checkout "$base_branch" && git pull --ff-only
+
+  echo "Merging '$base_branch' into other local branches..."
+  # Get all local branches, excluding the base branch.
+  for branch in $(git branch --format='%(refname:short)' | grep -v "$base_branch"); do
+    git checkout "$branch"
+
+    # Check if this branch needs merging
+    local commits_behind=$(git rev-list --count HEAD.."$base_branch" 2>/dev/null)
+    if [[ "$commits_behind" == "0" ]]; then
+      echo "\n'$branch' is already up-to-date with '$base_branch', skipping..."
+      continue
+    fi
+
+    echo "\nMerging '$base_branch' into '$branch' ($commits_behind commits behind)..."
+    git pull origin "$base_branch"
+    if [ $? -ne 0 ]; then
+      echo "Merge failed for branch '$branch'."
+      echo "Please resolve conflicts, then run 'git commit' to complete the merge."
+      echo "To abort, run 'git merge --abort'."
+      return 1
+    fi
+
+    if [[ "$should_push" == true ]]; then
+      echo "Pushing '$branch' to origin..."
+      git push
+      if [ $? -ne 0 ]; then
+        echo "Push failed for branch '$branch'."
+        return 1
+      fi
+    fi
+  done
+
+  # Return to the original branch if it wasn't the base branch.
+  if [[ "$current_branch" != "$base_branch" ]]; then
+    echo "\nReturning to the original branch '$current_branch'..."
+    git checkout "$current_branch"
+  fi
+
+  echo "\nAll local branches have been merged with '$base_branch'."
+}

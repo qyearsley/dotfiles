@@ -1,0 +1,31 @@
+# Interactive cleanup of merged branches.
+# Deletes local branches that have been merged into main.
+function git-clean-merged() {
+  local base_branch="main"
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+  # Get merged branches excluding main and current branch.
+  local merged_branches=($(git branch --merged "$base_branch" | grep -v "\*" | grep -v "$base_branch" | sed 's/^[[:space:]]*//'))
+
+  if [ ${#merged_branches[@]} -eq 0 ]; then
+    echo "No merged branches to clean up."
+    return 0
+  fi
+
+  echo "The following branches have been merged into '$base_branch':"
+  for branch in $merged_branches; do
+    echo "  - $branch"
+  done
+
+  echo -n "\nDelete these branches? [y/N] "
+  read -r response
+
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    for branch in $merged_branches; do
+      git branch -d "$branch"
+      echo "Deleted: $branch"
+    done
+  else
+    echo "Cancelled."
+  fi
+}

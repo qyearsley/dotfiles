@@ -1,0 +1,11 @@
+# List all custom shell functions with descriptions.
+function funcs() {
+  echo "Custom Shell Functions:\n"
+
+  for func_file in ~/.zsh/functions/*; do
+    local func_name="${func_file:t}"
+    # Extract first comment line as description.
+    local description=$(head -n 1 "$func_file" | sed 's/^# //')
+    printf "  %-20s %s\n" "$func_name" "$description"
+  done | sort
+}

@@ -1,0 +1,10 @@
+# List files sorted by last git commit date
+# Shows when each file was last modified in git history
+function oldfiles() {
+  find . -type f | while read -r file; do
+    local last_modified=$(git log -n 1 --format="%ad %s" --date=format:"%Y-%m-%d %H:%M:%S" -- "$file" 2>/dev/null)
+    if [ -n "$last_modified" ]; then
+      echo "$last_modified $file"
+    fi
+  done | sort
+}

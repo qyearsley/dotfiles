@@ -1,0 +1,9 @@
+# Show what's listening on which ports.
+# Uses lsof to list open TCP connections in LISTEN state.
+#   -iTCP: show only TCP connections
+#   -sTCP:LISTEN: filter to listening sockets
+#   -n: don't resolve hostnames (faster)
+#   -P: don't resolve port names (show numbers)
+function ports() {
+  lsof -iTCP -sTCP:LISTEN -n -P | awk 'NR==1 || /LISTEN/'
+}
