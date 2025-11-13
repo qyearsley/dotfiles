@@ -1,0 +1,45 @@
+# Rebase all local branches onto main branch.
+# Fetches latest main, then rebases all local branches on top of it.
+function git-rebase-all() {
+  local base_branch="main"
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+  # Check for uncommitted changes.
+  if [[ -n "$(git status --porcelain)" ]]; then
+    echo "Aborting: You have uncommitted changes on branch '$current_branch'. Please commit or stash them first."
+    return 1
+  fi
+
+  echo "Fetching the latest from origin..."
+  git fetch origin "$base_branch":"$base_branch"
+
+  echo "Updating local '$base_branch' branch..."
+  git checkout "$base_branch" && git pull --ff-only
+
+  echo "Rebasing other local branches on top of '$base_branch'..."
+  # Get all local branches, excluding the base branch and the current branch.
+  for branch in $(git branch --format='%(refname:short)' | grep -v "$base_branch" | grep -v "$current_branch"); do
+    echo "\nRebasing '$branch'..."
+    git checkout "$branch" && git rebase "$base_branch"
+    if [ $? -ne 0 ]; then
+      echo "Rebase failed for branch '$branch'."
+      echo "Please resolve conflicts, then run 'git rebase --continue'."
+      echo "To skip this branch, run 'git rebase --skip'."
+      echo "To abort, run 'git rebase --abort'."
+      return 1
+    fi
+  done
+
+  # Return to the original branch.
+  echo "\nReturning to the original branch '$current_branch'..."
+  git checkout "$current_branch" && git rebase "$base_branch"
+  if [ $? -ne 0 ]; then
+    echo "Rebase failed for branch '$current_branch'."
+    echo "Please resolve conflicts, then run 'git rebase --continue'."
+    echo "To skip, run 'git rebase --skip'."
+    echo "To abort, run 'git rebase --abort'."
+    return 1
+  fi
+
+  echo "\nAll local branches have been rebased from '$base_branch'."
+}

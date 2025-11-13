@@ -1,0 +1,8 @@
+# List recently modified files.
+# Usage: recent [number]
+#   recent     - Show 10 most recently modified files
+#   recent 20  - Show 20 most recently modified files
+function recent() {
+  local count="${1:-10}"
+  find . -type f -not -path '*/\.*' -exec ls -lt {} + 2>/dev/null | head -n "$count"
+}
