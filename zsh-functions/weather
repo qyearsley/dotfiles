@@ -1,8 +1,0 @@
-# Fetch weather forecast.
-# Usage: weather [location]
-#   weather           - Show weather for current location
-#   weather Seattle   - Show weather for Seattle
-function weather() {
-  local location="${1:-}"
-  curl -s "wttr.in/${location}?format=3"
-}

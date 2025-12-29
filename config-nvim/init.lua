@@ -15,7 +15,13 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.encoding = "utf-8"
 vim.opt.termguicolors = true
-vim.opt.background = "light"
+-- Auto-detect macOS system theme and set background
+local theme = vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null')
+if theme:match('Dark') then
+  vim.opt.background = 'dark'
+else
+  vim.opt.background = 'light'
+end
 vim.opt.listchars = "tab:▷▷⋮"
 
 -- Additional recommended options
@@ -56,11 +62,9 @@ vim.opt.rtp:prepend(lazypath)
 -- Plugin Specifications
 -- ============================================================================
 require("lazy").setup({
-  -- EditorConfig support
-  { "gpanders/editorconfig.nvim" },
-
-  -- Color scheme (using your local NeoSolarized theme)
-  -- Note: Your custom theme is in colors/NeoSolarized.vim
+  -- ============================================================================
+  -- LSP & Language Support
+  -- ============================================================================
 
   -- LSP Configuration
   {
@@ -78,6 +82,10 @@ require("lazy").setup({
     },
   },
 
+  -- ============================================================================
+  -- Autocompletion & Snippets
+  -- ============================================================================
+
   -- Autocompletion
   {
     "hrsh7th/nvim-cmp",
@@ -93,14 +101,19 @@ require("lazy").setup({
     },
   },
 
+  -- ============================================================================
+  -- Syntax Highlighting & Editing
+  -- ============================================================================
+
   -- Treesitter for better syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "lua", "vim", "vimdoc", "python", "javascript", "typescript" },
-        auto_install = true,
+        -- Only essential languages you actually use
+        ensure_installed = { "lua", "vim", "vimdoc", "python", "javascript", "html", "markdown", "markdown_inline", "bash" },
+        auto_install = true,  -- Auto-install when opening new file types
         highlight = {
           enable = true,
           additional_vim_regex_highlighting = false,
@@ -109,6 +122,105 @@ require("lazy").setup({
       })
     end,
   },
+
+  -- Auto-pairs for brackets and quotes (automatically close brackets/quotes as you type)
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = function()
+      require("nvim-autopairs").setup({})
+      -- Integrate with nvim-cmp
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp = require("cmp")
+      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    end,
+  },
+
+  -- Fast and easy commenting (gcc to toggle line comment, gc in visual mode)
+  {
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup()
+    end,
+  },
+
+  -- ============================================================================
+  -- Navigation & Fuzzy Finding
+  -- ============================================================================
+
+  -- Fuzzy finder for files, text, buffers
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("telescope").setup({
+        defaults = {
+          mappings = {
+            i = {
+              ["<C-u>"] = false,
+              ["<C-d>"] = false,
+            },
+          },
+        },
+      })
+    end,
+  },
+
+  -- ============================================================================
+  -- Git Integration
+  -- ============================================================================
+
+  -- Git integration - shows changes in sign column
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup({
+        signs = {
+          add          = { text = '+' },
+          change       = { text = '~' },
+          delete       = { text = '_' },
+          topdelete    = { text = '‾' },
+          changedelete = { text = '~' },
+        },
+      })
+    end,
+  },
+
+  -- ============================================================================
+  -- UI Enhancements
+  -- ============================================================================
+
+  -- Shows available keybindings in a popup
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("which-key").setup({
+        preset = "modern",
+      })
+    end,
+  },
+
+  -- Better statusline with file info, git status, LSP info
+  {
+    "nvim-lualine/lualine.nvim",
+    config = function()
+      -- Use solarized theme matching the background
+      local lualine_theme = vim.o.background == "dark" and "solarized_dark" or "solarized_light"
+      require("lualine").setup({
+        options = {
+          theme = lualine_theme,
+          component_separators = "|",
+          section_separators = "",
+          icons_enabled = false,
+        },
+      })
+    end,
+  },
+
+  -- ============================================================================
+  -- AI Integration
+  -- ============================================================================
 
   -- Claude Code integration - Terminal wrapper for Claude Code CLI
   {
@@ -279,6 +391,47 @@ vim.keymap.set("n", "<C-l>", "<C-w>l")
 -- Stay in indent mode
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
+
+-- ============================================================================
+-- Telescope Keymaps
+-- ============================================================================
+local telescope_builtin = require("telescope.builtin")
+vim.keymap.set("n", "<leader>ff", telescope_builtin.find_files, { desc = "Find files" })
+vim.keymap.set("n", "<leader>fg", telescope_builtin.live_grep, { desc = "Find text (grep)" })
+vim.keymap.set("n", "<leader>fb", telescope_builtin.buffers, { desc = "Find buffers" })
+vim.keymap.set("n", "<leader>fh", telescope_builtin.help_tags, { desc = "Find help" })
+vim.keymap.set("n", "<leader>fr", telescope_builtin.oldfiles, { desc = "Find recent files" })
+
+-- ============================================================================
+-- Gitsigns Keymaps
+-- ============================================================================
+-- Navigation between git hunks
+vim.keymap.set("n", "]c", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next git hunk" })
+vim.keymap.set("n", "[c", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous git hunk" })
+-- Actions
+vim.keymap.set("n", "<leader>gp", "<cmd>Gitsigns preview_hunk<CR>", { desc = "Preview git hunk" })
+vim.keymap.set("n", "<leader>gb", "<cmd>Gitsigns blame_line<CR>", { desc = "Git blame line" })
+
+-- ============================================================================
+-- Netrw (built-in file browser) Configuration
+-- ============================================================================
+vim.g.netrw_banner = 0        -- Hide banner (press I to toggle)
+vim.g.netrw_liststyle = 3     -- Tree view
+vim.g.netrw_browse_split = 0  -- Open files in same window
+
+-- ============================================================================
+-- Netrw Keymaps
+-- ============================================================================
+-- Open file browser in current directory
+vim.keymap.set("n", "-", "<cmd>Explore<CR>", { desc = "Open file browser" })
+
+-- ============================================================================
+-- Comment.nvim Keymaps
+-- ============================================================================
+-- Uses default keybindings:
+-- gcc - Toggle line comment
+-- gbc - Toggle block comment
+-- gc - Toggle comment (in visual mode)
 
 -- ============================================================================
 -- Claude Code Keymaps
