@@ -1,0 +1,112 @@
+#!/usr/bin/env zsh
+# Safe update all repositories in ~/src
+# Checks that repos are on main/master branch and clean before pulling
+
+function src-update-all() {
+    local src_dir="$HOME/src"
+    local errors=()
+    local updated=()
+    local skipped=()
+
+    if [[ ! -d "$src_dir" ]]; then
+        echo "Error: Directory $src_dir not found"
+        return 1
+    fi
+
+    echo "Checking repositories in $src_dir..."
+
+    for repo_dir in "$src_dir"/*(/); do
+        local repo_name="${repo_dir:t}"
+
+        # Skip if not a git repository
+        if [[ ! -d "$repo_dir/.git" ]]; then
+            continue
+        fi
+
+        echo "\n$repo_name:"
+        cd "$repo_dir"
+
+        # Check if working directory is clean
+        if ! git diff-index --quiet HEAD --; then
+            skipped+=("$repo_name: has uncommitted changes")
+            echo "  Skipped: has uncommitted changes"
+            continue
+        fi
+
+        # Check if there are untracked files
+        if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+            skipped+=("$repo_name: has untracked files")
+            echo "  Skipped: has untracked files"
+            continue
+        fi
+
+        # Get current branch
+        local current_branch=$(git branch --show-current)
+
+        # Check if on main or master branch
+        if [[ "$current_branch" != "main" && "$current_branch" != "master" ]]; then
+            skipped+=("$repo_name: not on main/master (on $current_branch)")
+            echo "  Skipped: not on main/master (currently on $current_branch)"
+            continue
+        fi
+
+        # Check if branch has upstream
+        if ! git rev-parse --verify "@{upstream}" >/dev/null 2>&1; then
+            skipped+=("$repo_name: no upstream branch configured")
+            echo "  Skipped: no upstream branch configured"
+            continue
+        fi
+
+        # Check if already up to date
+        git fetch --quiet
+        local local_rev=$(git rev-parse HEAD)
+        local remote_rev=$(git rev-parse "@{upstream}")
+
+        if [[ "$local_rev" == "$remote_rev" ]]; then
+            echo "  Already up to date"
+            continue
+        fi
+
+        # Pull changes
+        if git pull --ff-only; then
+            updated+=("$repo_name")
+            echo "  Updated successfully"
+        else
+            errors+=("$repo_name: failed to pull (may need merge)")
+            echo "  Failed to pull (may need merge)"
+        fi
+    done
+
+    # Summary
+    echo "\nSummary:"
+
+    if (( ${#updated[@]} > 0 )); then
+        echo "Updated (${#updated[@]}):"
+        for repo in "${updated[@]}"; do
+            echo "  - $repo"
+        done
+    fi
+
+    if (( ${#skipped[@]} > 0 )); then
+        echo "\nSkipped (${#skipped[@]}):"
+        for reason in "${skipped[@]}"; do
+            echo "  - $reason"
+        done
+    fi
+
+    if (( ${#errors[@]} > 0 )); then
+        echo "\nErrors (${#errors[@]}):"
+        for error in "${errors[@]}"; do
+            echo "  - $error"
+        done
+        return 1
+    fi
+
+    cd "$src_dir"
+    echo "\nAll done!"
+}
+
+# If called directly (not sourced), run the function
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]] || [[ "${(%):-%x}" == "${0}" ]]; then
+    src-update-all "$@"
+fi

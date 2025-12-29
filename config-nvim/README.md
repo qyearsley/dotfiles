@@ -1,52 +1,69 @@
 # Neovim Configuration
 
-Modern Neovim configuration with LSP, autocompletion, and treesitter support.
+Modern Neovim config with native LSP and autocompletion.
 
-## Features
+## Structure
 
-- Native LSP integration with automatic server installation (Mason)
-- Autocompletion with nvim-cmp
-- Treesitter for enhanced syntax highlighting
-- EditorConfig support
-- Claude Code integration for AI-assisted coding
+```
+~/.config/nvim/
+├── init.lua              # Main configuration
+├── lazy-lock.json        # Plugin versions
+├── colors/               # Custom themes
+│   └── NeoSolarized.vim
+└── pack/                 # Native packages
+```
 
-## Installation
+## Key Features
 
-1. Install Neovim 0.11+ (for vim.lsp.config API)
-2. Link or copy `init.lua` to `~/.config/nvim/init.lua`
-3. Launch Neovim - plugins will install automatically via lazy.nvim
-4. LSP servers will be installed automatically via Mason
+- **Plugin Manager**: lazy.nvim
+- **LSP**: Native LSP with Mason (lua_ls, pyright, ts_ls)
+- **Completion**: nvim-cmp with LSP, buffer, path sources, autopairs
+- **Syntax**: Treesitter with auto-install
+- **Navigation**: Netrw (built-in browser), Telescope (fuzzy finder)
+- **Editing**: Comment.nvim (fast commenting), nvim-autopairs (auto-close brackets)
+- **Git**: Gitsigns (inline change markers)
+- **UI**: Lualine (statusline), Which-key (keybinding hints), NeoSolarized theme (light)
 
-## Supported Languages
+## Essential Keybindings
 
-Preconfigured LSP servers:
-- Lua (lua_ls)
-- Python (pyright)
-- TypeScript/JavaScript (ts_ls)
-
-Additional languages can be added through Mason (`:Mason`).
-
-## Key Mappings
+**Leader**: `Space`
 
 ### LSP
-- `gd` - Go to definition
-- `gr` - Find references
-- `K` - Hover documentation
-- `<leader>rn` - Rename symbol
-- `<leader>ca` - Code actions
-- `<leader>f` - Format document
+- `gd` - Definition | `gr` - References | `gi` - Implementation
+- `K` - Hover docs | `<leader>ca` - Code actions | `<leader>rn` - Rename
+- `<leader>f` - Format | `[g`/`]g` - Prev/next diagnostic
 
-### Claude Code
-- `<leader>cc` - Toggle Claude Code
-- `<leader>cr` - Resume conversation
-- `<leader>cn` - Continue last conversation
+### Completion
+- `<C-Space>` - Trigger | `<CR>` - Confirm | `<Tab>`/`<S-Tab>` - Navigate
 
-Leader key is `<Space>`.
+### Telescope (Fuzzy Finder)
+- `<leader>ff` - Find files | `<leader>fg` - Find text (grep)
+- `<leader>fb` - Find buffers | `<leader>fr` - Recent files
+- `<leader>fh` - Find help
 
-## Customization
+### Git (Gitsigns)
+- `]c`/`[c` - Next/previous git hunk
+- `<leader>gp` - Preview hunk | `<leader>gb` - Blame line
 
-Edit `init.lua` to:
-- Add more LSP servers in the Mason setup
-- Configure additional plugins
-- Adjust key mappings
-- Modify editor options
+### Navigation & Editing
+- `-` - Open file browser (netrw)
+- `gcc` - Toggle line comment | `gc` - Comment (visual mode)
+
+### Windows
+- `<C-h/j/k/l>` - Navigate splits
+
+## Common Commands
+
+```vim
+:Lazy              " Manage plugins
+:Mason             " Manage LSP servers
+:LspInfo           " LSP status
+:TSUpdate          " Update parsers
+:checkhealth       " Check setup
+```
+
+## Requirements
+
+- Neovim >= 0.11
+- Git, Node.js, Python3
+- Language servers auto-install via Mason

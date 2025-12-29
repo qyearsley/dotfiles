@@ -1,6 +1,7 @@
 # dotfiles
 
-Minimal, well-documented configuration files for Unix-based systems. Designed to be portable and generally useful across different machines.
+Minimal, well-documented configuration files for Unix-based systems. Designed
+to be portable and generally useful across different machines.
 
 ## Contents
 
@@ -16,32 +17,25 @@ See individual README files in each directory for detailed documentation.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
+git clone https://github.com/qyearsley/dotfiles.git
 
-# Link configuration files
-ln -s ~/dotfiles/zshrc ~/.zshrc
-ln -s ~/dotfiles/gitconfig ~/.gitconfig
-ln -s ~/dotfiles/config-nvim ~/.config/nvim
+# Copy or reference config files that you'd like to use.
+cp dotfiles/zshrc ~/.zshrc
+cp dotfiles/config-nvim/* ~/.config/nvim/
 
-# Link zsh functions
-mkdir -p ~/.zsh
-ln -s ~/dotfiles/zsh-functions ~/.zsh/functions
-
-# Link Claude commands (optional)
-mkdir -p ~/.config/claude/commands
-ln -s ~/dotfiles/claude-commands/* ~/.config/claude/commands/
+# Copying zsh functions
+mkdir -p ~/.zsh/functions/
+cp dotfiles/zsh-functions/* ~/.zsh/functions/
 ```
 
 ## Recommended Tools
 
 Useful CLI packages to consider installing:
 
-- **git** - Version control
-- **gh** - GitHub CLI tools
 - **git-extras** - Additional git utilities
-- **zsh** - Enhanced shell (see https://ohmyz.sh/)
+- **zsh** - Enhanced shell
 - **neovim** - Modern vim alternative
-- **tmux** - Terminal multiplexer
+- **tmux** - Terminal multiplexer, although it's more complex than `screen`
 - **tree** - Directory visualization
 - **kubectl** - Kubernetes CLI (for k8s functions)
 - **ack** or **ripgrep** - Better grep alternatives
