@@ -5,7 +5,8 @@ to be portable and generally useful across different machines.
 
 ## Contents
 
-- **zshrc** - Zsh shell configuration with Oh My Zsh integration
+- **zshrc** - Zsh shell configuration with Starship prompt
+- **config-fish/** - Fish shell configuration with Starship prompt
 - **gitconfig** - Git aliases and settings
 - **config-nvim/** - Modern Neovim configuration with LSP support
 - **zsh-functions/** - Custom shell functions for git, kubernetes, and utilities
@@ -19,23 +20,46 @@ See individual README files in each directory for detailed documentation.
 # Clone the repository
 git clone https://github.com/qyearsley/dotfiles.git
 
-# Copy or reference config files that you'd like to use.
+# Zsh setup
 cp dotfiles/zshrc ~/.zshrc
-cp dotfiles/config-nvim/* ~/.config/nvim/
-
-# Copying zsh functions
 mkdir -p ~/.zsh/functions/
 cp dotfiles/zsh-functions/* ~/.zsh/functions/
+
+# Fish setup (alternative to zsh)
+mkdir -p ~/.config/fish/
+cp dotfiles/config-fish/config.fish ~/.config/fish/
+
+# Neovim setup
+mkdir -p ~/.config/nvim/
+cp dotfiles/config-nvim/* ~/.config/nvim/
 ```
 
 ## Recommended Tools
 
-Useful CLI packages to consider installing:
+Install these tools using your package manager (e.g., `brew install <package>` on macOS):
 
-- **git-extras** - Additional git utilities
-- **zsh** - Enhanced shell
-- **neovim** - Modern vim alternative
-- **tmux** - Terminal multiplexer, although it's more complex than `screen`
+### Shells & Prompts
+- **fish** - Friendly interactive shell with excellent defaults, smart completions
+- **starship** - Fast, minimal, cross-shell prompt (works with both zsh and fish)
+
+### Editors
+- **neovim** - Modern vim with LSP support and plugin ecosystem
+- **helix** - Modern modal editor with zero-config LSP, treesitter built-in
+
+### Modern CLI Replacements
+- **bat** - `cat` with syntax highlighting and git integration
+- **eza** - Modern `ls` replacement with git integration and colors
+- **fd** - Simpler, faster `find` alternative with better defaults
+- **ripgrep** (rg) - Faster `grep` alternative
+- **ack** - Pattern searching tool, alternative to `grep`
+- **duf** - `df` replacement with better formatting and visualization
+- **htop** - Interactive `top` replacement with better visualization
+- **delta** - Enhanced `git diff` viewer with syntax highlighting
+- **jq** - JSON processor for parsing and manipulating JSON data
+
+### Utilities
+- **glow** - Markdown renderer for the terminal
 - **tree** - Directory visualization
-- **kubectl** - Kubernetes CLI (for k8s functions)
-- **ack** or **ripgrep** - Better grep alternatives
+- **git-extras** - Additional git utilities
+- **kubectl** - Kubernetes CLI (required for k8s functions)
+- **tmux** - Terminal multiplexer
