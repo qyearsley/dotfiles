@@ -6,7 +6,8 @@ to be portable and generally useful across different machines.
 ## Contents
 
 - **zshrc** - Zsh shell configuration with Starship prompt
-- **config-fish/** - Fish shell configuration with Starship prompt
+- **starship.toml** - Starship prompt configuration (shared by zsh and fish)
+- **config-fish/** - Fish shell configuration with Starship prompt and functions
 - **gitconfig** - Git aliases and settings
 - **config-nvim/** - Modern Neovim configuration with LSP support
 - **zsh-functions/** - Custom shell functions for git, kubernetes, and utilities
@@ -20,14 +21,19 @@ See individual README files in each directory for detailed documentation.
 # Clone the repository
 git clone https://github.com/qyearsley/dotfiles.git
 
+# Starship prompt (works with both zsh and fish)
+mkdir -p ~/.config/
+cp dotfiles/starship.toml ~/.config/
+
 # Zsh setup
 cp dotfiles/zshrc ~/.zshrc
 mkdir -p ~/.zsh/functions/
 cp dotfiles/zsh-functions/* ~/.zsh/functions/
 
 # Fish setup (alternative to zsh)
-mkdir -p ~/.config/fish/
+mkdir -p ~/.config/fish/functions/
 cp dotfiles/config-fish/config.fish ~/.config/fish/
+cp dotfiles/config-fish/functions/* ~/.config/fish/functions/
 
 # Neovim setup
 mkdir -p ~/.config/nvim/
