@@ -1,0 +1,27 @@
+# Starship Prompt Configuration
+
+# Disable blank line before prompt
+add_newline = false
+
+# Two-line format: info on first line, prompt on second
+format = """$directory$git_branch$git_status
+$character"""
+
+# Show abbreviated paths (fish-style: ~/s/d/a/configs)
+[directory]
+truncation_length = 1
+fish_style_pwd_dir_length = 1
+truncate_to_repo = false
+
+# Git branch without icon
+[git_branch]
+symbol = ""
+
+# Standard git status (uses defaults, just enabled)
+[git_status]
+disabled = false
+
+# Standard prompt symbol
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
