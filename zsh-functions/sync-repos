@@ -1,0 +1,42 @@
+#!/usr/bin/env zsh
+# Sync all branches in repos in ~/src
+
+function sync-repos() {
+    local src_dir="$HOME/src"
+    local skipped_repos=()
+
+    # Find all git repos
+    for repo in "$src_dir"/*(/); do
+        if [[ -d "$repo/.git" ]]; then
+            local repo_name="${repo:t}"
+            pushd "$repo" > /dev/null
+
+            # Check for uncommitted changes
+            if ! git diff-index --quiet HEAD 2>/dev/null; then
+                skipped_repos+=("$repo_name (uncommitted changes)")
+                popd > /dev/null
+                continue
+            fi
+
+            # Sync all branches
+            echo "Syncing branches in $repo_name"
+            sync-branches "$@"
+
+            popd > /dev/null
+        fi
+    done
+
+    # Report skipped repos
+    if (( ${#skipped_repos[@]} > 0 )); then
+        echo ""
+        echo "Skipped repos:"
+        for skip in "${skipped_repos[@]}"; do
+            echo "  - $skip"
+        done
+    fi
+}
+
+# If called directly (not sourced), run the function
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]] || [[ "${(%):-%x}" == "${0}" ]]; then
+    sync-repos "$@"
+fi

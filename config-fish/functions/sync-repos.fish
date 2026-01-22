@@ -1,4 +1,4 @@
-function sync-repos --description "Pull all repos in ~/src that are on base branch"
+function sync-repos --description "Sync all branches in repos in ~/src"
     set src_dir ~/src
     set -l skipped_repos
 
@@ -8,16 +8,6 @@ function sync-repos --description "Pull all repos in ~/src that are on base bran
             set repo_name (basename $repo)
             pushd $repo >/dev/null
 
-            set current_branch (git branch --show-current)
-            set base_branch (git-base-branch)
-
-            # Check if on base branch
-            if test "$current_branch" != "$base_branch"
-                set -a skipped_repos "$repo_name (on $current_branch)"
-                popd >/dev/null
-                continue
-            end
-
             # Check for uncommitted changes
             if not git diff-index --quiet HEAD 2>/dev/null
                 set -a skipped_repos "$repo_name (uncommitted changes)"
@@ -25,9 +15,9 @@ function sync-repos --description "Pull all repos in ~/src that are on base bran
                 continue
             end
 
-            # Pull
-            echo "Pulling $base_branch in $repo_name"
-            git pull
+            # Sync all branches
+            echo "Syncing branches in $repo_name"
+            sync-branches $argv
 
             popd >/dev/null
         end

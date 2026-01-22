@@ -4,13 +4,14 @@
 add_newline = false
 
 # Two-line format: info on first line, prompt on second
-format = """$directory$git_branch$git_status
-$character"""
+format = """$directory$git_branch$git_status$python$nodejs
+$status$shell"""
 
-# Show abbreviated paths (fish-style: ~/s/d/a/configs)
 [directory]
-truncation_length = 1
-fish_style_pwd_dir_length = 1
+# The combination of truncation_length 1 and fish_style_pwd_dir_length would
+# make us show abbreviated paths (fish-style: ~/s/d/a/configs)
+# truncation_length = 1
+# fish_style_pwd_dir_length = 1
 truncate_to_repo = false
 
 # Git branch without icon
@@ -21,7 +22,23 @@ symbol = ""
 [git_status]
 disabled = false
 
-# Standard prompt symbol
-[character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+# Shell-specific prompt character
+[shell]
+fish_indicator = ">"
+zsh_indicator = "%"
+bash_indicator = "$"
+format = "$indicator "
+disabled = false
+
+# Show exit code on failure
+[status]
+disabled = false
+format = "[$status]($style) "
+style = "bold red"
+success_symbol = ""
+
+# Python virtualenv
+[python]
+format = "[$virtualenv]($style) "
+symbol = ""
+

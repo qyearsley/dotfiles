@@ -1,4 +1,12 @@
-function sync-branches --description "Update all unmerged branches by merging base branch"
+function sync-branches --description "Update all unmerged branches by rebasing on base branch"
+    # Parse arguments
+    set use_merge false
+    for arg in $argv
+        if test "$arg" = "--merge"
+            set use_merge true
+        end
+    end
+
     # Fetch latest
     git fetch origin
     or return 1
@@ -17,10 +25,14 @@ function sync-branches --description "Update all unmerged branches by merging ba
         git checkout $branch
         or continue
 
-        # Merge origin/base_branch
-        git merge origin/$base_branch
+        # Rebase or merge origin/base_branch
+        if test $use_merge = true
+            git merge origin/$base_branch
+        else
+            git rebase origin/$base_branch
+        end
 
-        # If merge failed (conflicts), stop
+        # If operation failed (conflicts), stop
         if test $status -ne 0
             echo "Conflicts in $branch - stopping"
             return 1

@@ -1,0 +1,57 @@
+#!/usr/bin/env zsh
+# Update all unmerged branches by rebasing on base branch
+
+function sync-branches() {
+    # Parse arguments
+    local use_merge=false
+    for arg in "$@"; do
+        if [[ "$arg" == "--merge" ]]; then
+            use_merge=true
+        fi
+    done
+
+    # Fetch latest
+    git fetch origin || return 1
+
+    local base_branch="$(git-base-branch)"
+    echo "Using base branch: $base_branch"
+
+    # Get current branch to return to it
+    local current_branch="$(git branch --show-current)"
+
+    # Get all local branches except base branches
+    local branches=($(git branch --format='%(refname:short)' | grep -v "^$base_branch\$"))
+
+    for branch in "${branches[@]}"; do
+        echo "Updating $branch..."
+        git checkout "$branch" || continue
+
+        # Rebase or merge origin/base_branch
+        if [[ "$use_merge" == "true" ]]; then
+            git merge "origin/$base_branch"
+        else
+            git rebase "origin/$base_branch"
+        fi
+
+        # If operation failed (conflicts), stop
+        if [[ $? -ne 0 ]]; then
+            echo "Conflicts in $branch - stopping"
+            return 1
+        fi
+
+        # If branch has a remote (PR exists), push
+        local remote_branch="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)"
+        if [[ -n "$remote_branch" ]]; then
+            echo "Pushing $branch..."
+            git push
+        fi
+    done
+
+    # Return to original branch
+    git checkout "$current_branch"
+}
+
+# If called directly (not sourced), run the function
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]] || [[ "${(%):-%x}" == "${0}" ]]; then
+    sync-branches "$@"
+fi
