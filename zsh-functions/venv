@@ -1,0 +1,12 @@
+# Activate Python virtualenv (.venv or venv).
+# Automatically detects and sources the appropriate activate script.
+function venv() {
+  if [ -f .venv/bin/activate ]; then
+    source .venv/bin/activate
+  elif [ -f venv/bin/activate ]; then
+    source venv/bin/activate
+  else
+    echo "No virtualenv found (.venv or venv)"
+    return 1
+  fi
+}
