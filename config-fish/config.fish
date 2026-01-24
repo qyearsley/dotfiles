@@ -3,7 +3,6 @@ if status is-interactive
     starship init fish | source
 
     # Environment variables
-    set -gx HOMEBREW_NO_ENV_HINTS 1
     set -gx GOPATH $HOME/go
     set -gx PATH $HOME/go/bin $PATH
     set -gx EDITOR hx

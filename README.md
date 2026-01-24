@@ -1,71 +1,51 @@
 # dotfiles
 
-Minimal, well-documented configuration files for Unix-based systems. Designed
-to be portable and generally useful across different machines.
+Minimal, well-documented configuration files for Unix-based systems. Designed to
+be portable and generally useful across different machines.
 
-## Contents
+## Philosophy
 
-- **zshrc** - Zsh shell configuration with Starship prompt
-- **starship.toml** - Starship prompt configuration (shared by zsh and fish)
-- **config-fish/** - Fish shell configuration with Starship prompt and functions
-- **gitconfig** - Git aliases and settings
-- **config-nvim/** - Modern Neovim configuration with LSP support
-- **zsh-functions/** - Custom shell functions for git, kubernetes, and utilities
-- **claude-commands/** - Slash commands for Claude Code CLI
+Keep configs minimal and close to defaults. Follow standard conventions (XDG
+paths, shell idioms). Prefer tools that improve productivity without requiring
+extensive configuration.
 
 See individual README files in each directory for detailed documentation.
 
-## Quick Start
+## Noteworthy CLI tools
 
-```bash
-# Clone the repository
-git clone https://github.com/qyearsley/dotfiles.git
-
-# Starship prompt (works with both zsh and fish)
-mkdir -p ~/.config/
-cp dotfiles/starship.toml ~/.config/
-
-# Zsh setup
-cp dotfiles/zshrc ~/.zshrc
-mkdir -p ~/.zsh/functions/
-cp dotfiles/zsh-functions/* ~/.zsh/functions/
-
-# Fish setup (alternative to zsh)
-mkdir -p ~/.config/fish/functions/
-cp dotfiles/config-fish/config.fish ~/.config/fish/
-cp dotfiles/config-fish/functions/* ~/.config/fish/functions/
-
-# Neovim setup
-mkdir -p ~/.config/nvim/
-cp dotfiles/config-nvim/* ~/.config/nvim/
-```
-
-## Recommended Tools
-
-Install these tools using your package manager (e.g., `brew install <package>` on macOS):
+Install using your package manager (`brew install <package>` on macOS).
 
 ### Shells & Prompts
-- **fish** - Friendly interactive shell with excellent defaults, smart completions
-- **starship** - Fast, minimal, cross-shell prompt (works with both zsh and fish)
+
+- fish - Smart completions and syntax highlighting built-in (non-POSIX)
+- starship - Fast cross-shell prompt with minimal config
 
 ### Editors
-- **neovim** - Modern vim with LSP support and plugin ecosystem
-- **helix** - Modern modal editor with zero-config LSP, treesitter built-in
+
+- neovim - Modern vim with native LSP
+- helix - Modal editor with zero-config LSP and treesitter
 
 ### Modern CLI Replacements
-- **bat** - `cat` with syntax highlighting and git integration
-- **eza** - Modern `ls` replacement with git integration and colors
-- **fd** - Simpler, faster `find` alternative with better defaults
-- **ripgrep** (rg) - Faster `grep` alternative
-- **ack** - Pattern searching tool, alternative to `grep`
-- **duf** - `df` replacement with better formatting and visualization
-- **htop** - Interactive `top` replacement with better visualization
-- **delta** - Enhanced `git diff` viewer with syntax highlighting
-- **jq** - JSON processor for parsing and manipulating JSON data
+
+- bat - `cat` with syntax highlighting and git integration
+- eza - `ls` with git status and colors
+- fd - `find` with better defaults, respects .gitignore
+- ripgrep (rg) - Fast `grep` optimized for code
+- duf - `df` with readable output
+- htop - Interactive `top` with visual bars
+- delta - `git diff` with syntax highlighting
+- jq - JSON processor for CLI
 
 ### Utilities
-- **glow** - Markdown renderer for the terminal
-- **tree** - Directory visualization
-- **git-extras** - Additional git utilities
-- **kubectl** - Kubernetes CLI (required for k8s functions)
-- **tmux** - Terminal multiplexer
+
+- glow - Render markdown in terminal
+- tree - Directory visualization
+- git-extras - Additional git commands
+- kubectl - Kubernetes CLI (required for k8s functions)
+- tmux - Terminal multiplexer
+
+## Resources
+
+- [Starship config](https://starship.rs/config/)
+- [Fish tutorial](https://fishshell.com/docs/current/tutorial.html)
+- [Modern Unix tools](https://github.com/ibraheemdev/modern-unix)

@@ -1,0 +1,114 @@
+Helix for Vim Users - Quick Start
+==================================
+
+Philosophy: Helix uses selection -> action (vs vim's action -> motion).
+LSP, treesitter, and multiple cursors work out of the box.
+
+Core Differences
+----------------
+- Selection-first: select text, then act on it
+- Multiple cursors built-in (like VSCode)
+
+Essential Motions (familiar)
+-----------------------------
+h/j/k/l         left/down/up/right
+w/b/e           word motions (same as vim)
+0/$             line start/end
+gg/ge           file start/end
+f/F/t/T         find character forward/back
+%               match bracket
+
+Selection (different from vim)
+-------------------------------
+v               select mode (like visual)
+x               select line
+C               duplicate cursor on next line
+Alt-C           duplicate cursor on prev line
+,               collapse selection to cursor
+s               select regex match in selection
+&               align selections
+
+Actions on Selections
+---------------------
+c               change (delete and enter insert)
+d               delete (cut)
+y               yank
+p               paste after
+P               paste before
+~               toggle case
+
+Insert Mode
+-----------
+i               insert before selection
+a               append after selection
+I               insert at line start
+A               append at line end
+o               open line below
+O               open line above
+
+Search & Jump
+-------------
+/               search forward
+?               search backward
+n/N             next/prev match
+Space+j         jumplist (file history)
+Space+s         symbol search (LSP)
+
+LSP (may need language configuration)
+-------------------------
+Space+k         hover docs
+gd              goto definition
+gr              goto references
+Space+r         rename symbol
+Space+a         code actions
+]d/[d           next/prev diagnostic
+
+File Navigation
+---------------
+Space+f         file picker
+Space+b         buffer picker
+Space+/         search in file
+Space+'         jump to mark
+Space+w         save
+:q              quit
+:wq             save and quit (or :x)
+
+Multiple Cursors
+----------------
+C               add cursor on next line
+Alt-C           add cursor on prev line
+s               select matches (type regex)
+,               clear extra cursors
+&               align cursors
+
+Example: Change "foo" to "bar" in selection:
+  1. x (select line)
+  2. s (split selection)
+  3. type: foo
+  4. c (change)
+  5. type: bar
+  6. Esc
+
+Splits & Windows
+----------------
+Ctrl-w v        vertical split
+Ctrl-w s        horizontal split
+Ctrl-w h/j/k/l  navigate splits
+Ctrl-w q        close split
+
+Config Location
+---------------
+~/.config/helix/config.toml (auto-created on first run)
+~/.config/helix/languages.toml (LSP server config)
+
+Help
+----
+:tutor          interactive tutorial
+:help           command help
+Space+?         show all keybindings
+
+Tips
+----
+- Think "select then act" not "act then motion"
+- Use 's' to split selections, then operate on all at once
+- Multiple cursors replace most macro use cases
