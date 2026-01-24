@@ -34,16 +34,19 @@ When the user wants to remove a worktree:
 ## Common workflows
 
 **Starting new feature work:**
+
 ```bash
 git worktree add -b feature-x ../myrepo-feature-x
 ```
 
 **Working on existing branch:**
+
 ```bash
 git worktree add ../myrepo-bugfix bugfix
 ```
 
 **Cleaning up when done:**
+
 ```bash
 git worktree remove ../myrepo-feature-x
 git branch -d feature-x  # if branch was merged
