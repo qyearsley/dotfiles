@@ -4,6 +4,23 @@
 function sync-repos() {
     local src_dir="$HOME/src"
     local skipped_repos=()
+    local sync_all=false
+
+    # Parse arguments
+    for arg in "$@"; do
+        if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
+            echo "Usage: sync-repos [--all]"
+            echo ""
+            echo "Sync repos in ~/src (updates main branch by default)"
+            echo ""
+            echo "Options:"
+            echo "  --all      Sync all branches (not just main)"
+            echo "  -h, --help Show this help message"
+            return 0
+        elif [[ "$arg" == "--all" ]]; then
+            sync_all=true
+        fi
+    done
 
     # Find all git repos
     for repo in "$src_dir"/*(/); do
@@ -18,9 +35,29 @@ function sync-repos() {
                 continue
             fi
 
-            # Sync all branches
-            echo "Syncing branches in $repo_name"
-            sync-branches "$@"
+            if [[ "$sync_all" == "true" ]]; then
+                # Sync all branches
+                echo "Syncing all branches in $repo_name"
+                sync-branches "$@"
+            else
+                # Just update main branch
+                echo "Syncing main branch in $repo_name"
+                local base_branch="$(git-base-branch)"
+                local current_branch="$(git branch --show-current)"
+
+                git fetch origin || {
+                    popd > /dev/null
+                    continue
+                }
+
+                git checkout "$base_branch"
+                git pull --ff-only origin "$base_branch"
+
+                # Return to original branch if different
+                if [[ "$current_branch" != "$base_branch" ]]; then
+                    git checkout "$current_branch"
+                fi
+            fi
 
             popd > /dev/null
         fi

@@ -3,15 +3,12 @@
 # Disable blank line before prompt
 add_newline = false
 
-# Two-line format: info on first line, prompt on second
-format = """$directory$git_branch$git_status$python$nodejs
-$status$shell"""
+# Single-line format
+format = "$directory$git_branch$git_status$python$status$shell"
 
 [directory]
-# The combination of truncation_length 1 and fish_style_pwd_dir_length would
-# make us show abbreviated paths (fish-style: ~/s/d/a/configs)
-# truncation_length = 1
-# fish_style_pwd_dir_length = 1
+# Show only current directory name (like default zsh)
+truncation_length = 0
 truncate_to_repo = false
 
 # Git branch without icon

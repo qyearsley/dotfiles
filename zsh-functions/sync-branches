@@ -4,9 +4,22 @@
 function sync-branches() {
     # Parse arguments
     local use_merge=false
+    local do_push=false
     for arg in "$@"; do
-        if [[ "$arg" == "--merge" ]]; then
+        if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
+            echo "Usage: sync-branches [--merge] [--push]"
+            echo ""
+            echo "Update all unmerged branches by rebasing on base branch"
+            echo ""
+            echo "Options:"
+            echo "  --merge    Use merge instead of rebase"
+            echo "  --push     Push branches after updating"
+            echo "  -h, --help Show this help message"
+            return 0
+        elif [[ "$arg" == "--merge" ]]; then
             use_merge=true
+        elif [[ "$arg" == "--push" ]]; then
+            do_push=true
         fi
     done
 
@@ -39,11 +52,13 @@ function sync-branches() {
             return 1
         fi
 
-        # If branch has a remote (PR exists), push
-        local remote_branch="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)"
-        if [[ -n "$remote_branch" ]]; then
-            echo "Pushing $branch..."
-            git push
+        # If branch has a remote (PR exists) and --push flag is set, push
+        if [[ "$do_push" == "true" ]]; then
+            local remote_branch="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)"
+            if [[ -n "$remote_branch" ]]; then
+                echo "Pushing $branch..."
+                git push
+            fi
         fi
     done
 
