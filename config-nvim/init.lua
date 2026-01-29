@@ -9,10 +9,8 @@ vim.opt.expandtab = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.joinspaces = false
-vim.opt.showmatch = true
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
-vim.opt.encoding = "utf-8"
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 300
@@ -21,9 +19,13 @@ vim.opt.completeopt = "menu,menuone,noselect"
 vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.swapfile = false
+vim.opt.scrolloff = 8
+vim.opt.list = true
+vim.opt.listchars = { tab = "→ ", trail = "·", nbsp = "␣" }
 
-vim.cmd[[filetype plugin indent on]]
-vim.cmd[[syntax on]]
+-- Auto-detect macOS system theme
+local theme = vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null')
+vim.opt.background = theme:match('Dark') and 'dark' or 'light'
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -41,14 +43,60 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Plugins
 require("lazy").setup({
+  -- Kanagawa theme
+  {
+    "rebelot/kanagawa.nvim",
+    priority = 1000,
+    config = function()
+      require("kanagawa").setup({})
+    end,
+  },
+
+  -- Lualine statusline
+  {
+    "nvim-lualine/lualine.nvim",
+    config = function()
+      require("lualine").setup({
+        options = { theme = "auto" },
+        sections = {
+          lualine_x = { "filetype" },
+          lualine_y = {},
+        },
+      })
+    end,
+  },
+
+  -- Tree-sitter syntax highlighting
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
+      local status_ok, configs = pcall(require, "nvim-treesitter.configs")
+      if not status_ok then
+        return
+      end
+      configs.setup({
+        ensure_installed = { "lua", "python", "typescript", "javascript", "markdown", "bash" },
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end,
+  },
+
+  -- Which-key (shows available keybindings)
+  {
+    "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup({ delay = 400 })
+    end,
+  },
+
   -- LSP
   {
     "neovim/nvim-lspconfig",
     dependencies = {
       { "williamboman/mason.nvim", config = true },
       { "williamboman/mason-lspconfig.nvim" },
-      { "j-hui/fidget.nvim", opts = {} },
-      { "folke/neodev.nvim", opts = {} },
     },
   },
 
@@ -56,8 +104,6 @@ require("lazy").setup({
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -88,7 +134,7 @@ require("lazy").setup({
   },
 })
 
-vim.cmd[[colorscheme NeoSolarized]]
+vim.cmd.colorscheme("kanagawa-lotus")
 
 -- LSP Setup
 require("mason").setup()
@@ -156,42 +202,19 @@ vim.lsp.enable({ 'lua_ls', 'pyright', 'ts_ls' })
 
 -- Autocompletion
 local cmp = require("cmp")
-local luasnip = require("luasnip")
 
 cmp.setup({
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
   mapping = cmp.mapping.preset.insert({
     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
     ["<C-f>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<C-e>"] = cmp.mapping.abort(),
     ["<CR>"] = cmp.mapping.confirm({ select = true }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
+    ["<Tab>"] = cmp.mapping.select_next_item(),
+    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
   }),
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
-    { name = "luasnip" },
     { name = "path" },
   }, {
     { name = "buffer" },

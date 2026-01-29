@@ -16,6 +16,8 @@ setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_FIND_NO_DUPS
 # Environment
 export GOPATH="$HOME/go"
 export PATH="$HOME/go/bin:$PATH"
+export EDITOR=nvim
+export VISUAL=nvim
 
 # Custom functions - Auto-load from ~/.zsh/functions
 fpath=(~/.zsh/functions $fpath)

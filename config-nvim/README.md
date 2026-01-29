@@ -6,9 +6,11 @@ Minimal Neovim setup with LSP and completion. All configuration is in `init.lua`
 
 - **LSP**: Mason auto-installs lua_ls, pyright, ts_ls
 - **Completion**: nvim-cmp with LSP, buffer, and path sources
-- **Navigation**: Telescope fuzzy finder, netrw file browser
+- **Syntax**: Tree-sitter for context-aware highlighting
+- **Navigation**: Telescope fuzzy finder, netrw file browser, which-key hints
 - **Git**: Gitsigns for inline change markers
-- **Theme**: NeoSolarized (light)
+- **Statusline**: Minimal lualine (mode, filename, filetype, diagnostics, position)
+- **Theme**: Kanagawa Lotus (light, muted, Helix-inspired)
 
 Leader key is `Space`. Keybindings are documented in init.lua.
 
