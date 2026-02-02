@@ -43,7 +43,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Plugins
 require("lazy").setup({
-  -- Kanagawa theme
+  -- Theme: Kanagawa with lotus (light) variant
   {
     "rebelot/kanagawa.nvim",
     priority = 1000,
@@ -52,7 +52,7 @@ require("lazy").setup({
     end,
   },
 
-  -- Lualine statusline
+  -- Statusline with minimal configuration
   {
     "nvim-lualine/lualine.nvim",
     config = function()
@@ -66,7 +66,7 @@ require("lazy").setup({
     end,
   },
 
-  -- Tree-sitter syntax highlighting
+  -- Tree-sitter for improved syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -83,7 +83,7 @@ require("lazy").setup({
     end,
   },
 
-  -- Which-key (shows available keybindings)
+  -- Shows available keybindings on <leader> press
   {
     "folke/which-key.nvim",
     config = function()
@@ -91,7 +91,7 @@ require("lazy").setup({
     end,
   },
 
-  -- LSP
+  -- Native LSP configuration and server installer
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -100,24 +100,24 @@ require("lazy").setup({
     },
   },
 
-  -- Autocompletion
+  -- Autocompletion engine with LSP integration
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-nvim-lsp",    -- LSP completion source
+      "hrsh7th/cmp-buffer",       -- Buffer text completion
+      "hrsh7th/cmp-path",         -- File path completion
     },
   },
 
-  -- Telescope
+  -- Fuzzy finder for files, grep, buffers, etc.
   {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
 
-  -- Git signs
+  -- Git change indicators in sign column
   {
     "lewis6991/gitsigns.nvim",
     config = function()
@@ -167,36 +167,37 @@ vim.diagnostic.config({
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-vim.lsp.config('lua_ls', {
-  cmd = { 'lua-language-server' },
-  root_markers = { '.luarc.json', '.luacheckrc', '.stylua.toml', 'stylua.toml' },
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    Lua = {
-      diagnostics = { globals = { "vim" } },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file("", true),
-        checkThirdParty = false,
+-- Configure LSP servers with shared on_attach and capabilities
+local lsp_servers = {
+  lua_ls = {
+    cmd = { 'lua-language-server' },
+    root_markers = { '.luarc.json', '.luacheckrc', '.stylua.toml', 'stylua.toml' },
+    settings = {
+      Lua = {
+        diagnostics = { globals = { "vim" } },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
+        },
+        telemetry = { enable = false },
       },
-      telemetry = { enable = false },
     },
   },
-})
+  pyright = {
+    cmd = { 'pyright-langserver', '--stdio' },
+    root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt' },
+  },
+  ts_ls = {
+    cmd = { 'typescript-language-server', '--stdio' },
+    root_markers = { 'package.json', 'tsconfig.json' },
+  },
+}
 
-vim.lsp.config('pyright', {
-  cmd = { 'pyright-langserver', '--stdio' },
-  root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt' },
-  on_attach = on_attach,
-  capabilities = capabilities,
-})
-
-vim.lsp.config('ts_ls', {
-  cmd = { 'typescript-language-server', '--stdio' },
-  root_markers = { 'package.json', 'tsconfig.json' },
-  on_attach = on_attach,
-  capabilities = capabilities,
-})
+for server, config in pairs(lsp_servers) do
+  config.on_attach = on_attach
+  config.capabilities = capabilities
+  vim.lsp.config(server, config)
+end
 
 vim.lsp.enable({ 'lua_ls', 'pyright', 'ts_ls' })
 

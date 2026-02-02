@@ -5,7 +5,7 @@ if status is-interactive
     # Environment variables
     set -gx GOPATH $HOME/go
     set -gx PATH $HOME/go/bin $PATH
-    set -gx EDITOR hx
+    set -gx EDITOR nvim
     set -gx PAGER bat
 
     # Aliases

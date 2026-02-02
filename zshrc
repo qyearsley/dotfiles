@@ -21,9 +21,11 @@ export VISUAL=nvim
 
 # Custom functions - Auto-load from ~/.zsh/functions
 fpath=(~/.zsh/functions $fpath)
-for func in ~/.zsh/functions/*; do
-  autoload -Uz ${func:t}
-done
+if [[ -d ~/.zsh/functions ]]; then
+  for func in ~/.zsh/functions/*; do
+    autoload -Uz ${func:t}
+  done
+fi
 
 # Command history search with up-down arrows
 bindkey '^[[A' up-line-or-search

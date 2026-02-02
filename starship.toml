@@ -4,7 +4,7 @@
 add_newline = false
 
 # Single-line format
-format = "$directory$git_branch$git_status$python$status$shell"
+format = "$python$directory$git_branch$git_status$status$shell"
 
 [directory]
 # Show only current directory name (like default zsh)
@@ -36,6 +36,5 @@ success_symbol = ""
 
 # Python virtualenv
 [python]
-format = "[$virtualenv]($style) "
+format = "($virtualenv) "
 symbol = ""
-

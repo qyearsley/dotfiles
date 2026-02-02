@@ -3,6 +3,21 @@
 Minimal, well-documented configuration files for Unix-based systems. Designed to
 be portable and generally useful across different machines.
 
+## Requirements
+
+- Neovim 0.11+ (for config-nvim LSP features)
+- kubectl (for k8s-related Fish/Zsh functions: klogs, kwatch, etc.)
+- Git (for all git-* functions)
+
+## Sync Scripts
+
+Helper scripts to keep configs in sync between this repo and your system:
+
+- `./scripts/sync-from-system.sh` - Pull configs from system into repo
+- `./scripts/sync-to-system.sh` - Deploy configs from repo to system
+
+Both scripts check modification times and prompt before overwriting newer files.
+
 ## Philosophy
 
 Keep configs minimal and close to defaults. Follow standard conventions (XDG
@@ -22,8 +37,8 @@ Install using your package manager (`brew install <package>` on macOS).
 
 ### Editors
 
-- neovim - Modern vim with native LSP
-- helix - Modal editor with zero-config LSP and treesitter
+- neovim - Modern vim with native LSP (primary editor, configured in config-nvim/)
+- helix - Modal editor with zero-config LSP and treesitter (optional alternative)
 
 ### Modern CLI Replacements
 

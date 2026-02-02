@@ -1,30 +1,57 @@
 # Interactive cleanup of merged branches.
-# Deletes local branches that have been merged into main.
+# Deletes local branches that have been merged into origin/main.
 function git-clean-merged() {
-  local base_branch="main"
+  echo "Fetching latest from origin..."
+  if ! git fetch origin; then
+    echo "Failed to fetch from origin"
+    return 1
+  fi
+
+  # Get base branch (main or master)
+  local base_branch
+  if git show-ref --verify --quiet refs/remotes/origin/main; then
+    base_branch="main"
+  elif git show-ref --verify --quiet refs/remotes/origin/master; then
+    base_branch="master"
+  else
+    echo "Error: Could not find origin/main or origin/master"
+    return 1
+  fi
+
   local current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
-  # Get merged branches excluding main and current branch.
-  local merged_branches=($(git branch --merged "$base_branch" | grep -v "\*" | grep -v "$base_branch" | sed 's/^[[:space:]]*//'))
+  # Get merged branches excluding base branch and current branch
+  local merged_branches=($(git branch --merged "origin/$base_branch" | grep -v "\*" | grep -v "^[[:space:]]*$base_branch\$" | sed 's/^[[:space:]]*//'))
 
   if [ ${#merged_branches[@]} -eq 0 ]; then
     echo "No merged branches to clean up."
     return 0
   fi
 
-  echo "The following branches have been merged into '$base_branch':"
+  echo "\nThe following branches have been merged into 'origin/$base_branch':\n"
   for branch in $merged_branches; do
-    echo "  - $branch"
+    # Check if remote branch exists
+    local remote_status="no remote"
+    if git rev-parse --verify --quiet "refs/remotes/origin/$branch" >/dev/null 2>&1; then
+      remote_status="remote exists"
+    else
+      remote_status="remote deleted"
+    fi
+
+    # Get last commit info
+    local last_commit=$(git log -1 --format="%cr: %s" "$branch" 2>/dev/null)
+
+    printf "  - %-25s [%s] %s\n" "$branch" "$remote_status" "$last_commit"
   done
 
-  echo -n "\nDelete these branches? [y/N] "
+  echo -n "\nDelete these local branches? [y/N] "
   read -r response
 
   if [[ "$response" =~ ^[Yy]$ ]]; then
     for branch in $merged_branches; do
-      git branch -d "$branch"
-      echo "Deleted: $branch"
+      git branch -d "$branch" && echo "Deleted: $branch"
     done
+    echo "\nCleanup complete!"
   else
     echo "Cancelled."
   fi

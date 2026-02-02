@@ -11,4 +11,5 @@ function klogs
 
     set component $argv[1]
     kubectl logs -l "app.kubernetes.io/component=$component" --all-containers=true --tail=1000 | less
+    or return 1
 end

@@ -1,26 +1,45 @@
 #!/usr/bin/env zsh
-# Sync all branches in repos in ~/src
+# Sync all git repositories in a directory
+# Updates main/master branch by default, or all branches with --all
 
 function sync-repos() {
-    local src_dir="$HOME/src"
+    local src_dir="${1:-$HOME/src}"
     local skipped_repos=()
     local sync_all=false
 
     # Parse arguments
     for arg in "$@"; do
         if [[ "$arg" == "--help" || "$arg" == "-h" ]]; then
-            echo "Usage: sync-repos [--all]"
+            echo "Usage: sync-repos [directory] [--all] [--merge] [--push]"
             echo ""
-            echo "Sync repos in ~/src (updates main branch by default)"
+            echo "Sync repos in directory (updates main branch by default)"
+            echo ""
+            echo "Arguments:"
+            echo "  directory  Directory containing git repos (default: ~/src)"
             echo ""
             echo "Options:"
             echo "  --all      Sync all branches (not just main)"
+            echo "  --merge    Use merge instead of rebase (with --all)"
+            echo "  --push     Push branches after updating (with --all)"
             echo "  -h, --help Show this help message"
             return 0
         elif [[ "$arg" == "--all" ]]; then
             sync_all=true
+        elif [[ "$arg" == "--merge" ]]; then
+            continue  # Pass through to sync-branches
+        elif [[ "$arg" == "--push" ]]; then
+            continue  # Pass through to sync-branches
+        elif [[ "$arg" != "$src_dir" && -d "$arg" ]]; then
+            src_dir="$arg"
         fi
     done
+
+    if [[ ! -d "$src_dir" ]]; then
+        echo "Error: Directory '$src_dir' not found"
+        return 1
+    fi
+
+    echo "Syncing repositories in $src_dir..."
 
     # Find all git repos
     for repo in "$src_dir"/*(/); do
@@ -38,20 +57,48 @@ function sync-repos() {
             if [[ "$sync_all" == "true" ]]; then
                 # Sync all branches
                 echo "Syncing all branches in $repo_name"
-                sync-branches "$@"
+                if ! sync-branches "$@"; then
+                    echo "Failed to sync branches in $repo_name - stopping"
+                    popd > /dev/null
+                    return 1
+                fi
             else
                 # Just update main branch
                 echo "Syncing main branch in $repo_name"
-                local base_branch="$(git-base-branch)"
+
+                # Get base branch (main or master)
+                local base_branch
+                if git show-ref --verify --quiet refs/remotes/origin/main; then
+                    base_branch="main"
+                elif git show-ref --verify --quiet refs/remotes/origin/master; then
+                    base_branch="master"
+                elif git show-ref --verify --quiet refs/heads/main; then
+                    base_branch="main"
+                elif git show-ref --verify --quiet refs/heads/master; then
+                    base_branch="master"
+                else
+                    base_branch="main"
+                fi
+
                 local current_branch="$(git branch --show-current)"
 
-                git fetch origin || {
+                if ! git fetch origin; then
+                    echo "Failed to fetch in $repo_name - stopping"
                     popd > /dev/null
-                    continue
-                }
+                    return 1
+                fi
 
-                git checkout "$base_branch"
-                git pull --ff-only origin "$base_branch"
+                if ! git checkout "$base_branch"; then
+                    echo "Failed to checkout $base_branch in $repo_name - stopping"
+                    popd > /dev/null
+                    return 1
+                fi
+
+                if ! git pull --ff-only origin "$base_branch"; then
+                    echo "Failed to pull $base_branch in $repo_name - stopping"
+                    popd > /dev/null
+                    return 1
+                fi
 
                 # Return to original branch if different
                 if [[ "$current_branch" != "$base_branch" ]]; then

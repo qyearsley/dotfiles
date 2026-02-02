@@ -26,7 +26,19 @@ function sync-branches() {
     # Fetch latest
     git fetch origin || return 1
 
-    local base_branch="$(git-base-branch)"
+    # Get base branch (main or master)
+    local base_branch
+    if git show-ref --verify --quiet refs/remotes/origin/main; then
+        base_branch="main"
+    elif git show-ref --verify --quiet refs/remotes/origin/master; then
+        base_branch="master"
+    elif git show-ref --verify --quiet refs/heads/main; then
+        base_branch="main"
+    elif git show-ref --verify --quiet refs/heads/master; then
+        base_branch="master"
+    else
+        base_branch="main"
+    fi
     echo "Using base branch: $base_branch"
 
     # Get current branch to return to it
@@ -67,6 +79,7 @@ function sync-branches() {
 }
 
 # If called directly (not sourced), run the function
+# BASH_SOURCE check for bash, (%):-%x check for zsh
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]] || [[ "${(%):-%x}" == "${0}" ]]; then
     sync-branches "$@"
 fi
