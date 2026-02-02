@@ -1,9 +1,9 @@
-# Merge main branch into all local branches.
-# Fetches latest main, then merges it into all local branches.
+# Merge base branch (main or master) into all local branches.
+# Fetches latest base branch, then merges it into all local branches.
 # Usage: git-merge-all [--push]
 #   --push: Push each branch to origin after merging
 function git-merge-all() {
-  local base_branch="main"
+  local base_branch="$(git-base-branch)"
   local current_branch="$(git rev-parse --abbrev-ref HEAD)"
   local should_push=false
 

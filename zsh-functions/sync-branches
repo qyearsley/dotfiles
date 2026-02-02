@@ -67,6 +67,7 @@ function sync-branches() {
 }
 
 # If called directly (not sourced), run the function
+# BASH_SOURCE check for bash, (%):-%x check for zsh
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]] || [[ "${(%):-%x}" == "${0}" ]]; then
     sync-branches "$@"
 fi

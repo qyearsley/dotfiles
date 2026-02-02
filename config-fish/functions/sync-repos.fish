@@ -1,4 +1,7 @@
 function sync-repos --description "Sync all branches in repos in ~/src"
+    # Pass arguments through to sync-branches (e.g., --merge)
+    # Usage: sync-repos [--merge]
+    #   --merge: Use merge instead of rebase
     set src_dir ~/src
     set -l skipped_repos
 

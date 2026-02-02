@@ -1,7 +1,7 @@
-# Rebase all local branches onto main branch.
-# Fetches latest main, then rebases all local branches on top of it.
+# Rebase all local branches onto base branch (main or master).
+# Fetches latest base branch, then rebases all local branches on top of it.
 function git-rebase-all() {
-  local base_branch="main"
+  local base_branch="$(git-base-branch)"
   local current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
   # Check for uncommitted changes.

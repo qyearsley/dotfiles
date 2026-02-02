@@ -10,4 +10,3 @@
 	nb = checkout -b
 	sw = switch
 	short = rev-parse --short=12
-	st = status

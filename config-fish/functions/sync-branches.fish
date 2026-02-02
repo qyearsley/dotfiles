@@ -33,7 +33,7 @@ function sync-branches --description "Update all unmerged branches by rebasing o
         end
 
         # If operation failed (conflicts), stop
-        if test $status -ne 0
+        if test "$status" -ne 0
             echo "Conflicts in $branch - stopping"
             return 1
         end

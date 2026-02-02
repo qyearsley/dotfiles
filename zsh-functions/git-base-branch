@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+# Get the repository's base branch (main or master)
+
+function git-base-branch() {
+    # Check remote first
+    if git show-ref --verify --quiet refs/remotes/origin/main; then
+        echo "main"
+    elif git show-ref --verify --quiet refs/remotes/origin/master; then
+        echo "master"
+    else
+        # Fallback: check local branches
+        if git show-ref --verify --quiet refs/heads/main; then
+            echo "main"
+        elif git show-ref --verify --quiet refs/heads/master; then
+            echo "master"
+        else
+            echo "main"  # default assumption
+        fi
+    fi
+}
+
+# If called directly (not sourced), run the function
+# BASH_SOURCE check for bash, (%):-%x check for zsh
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]] || [[ "${(%):-%x}" == "${0}" ]]; then
+    git-base-branch "$@"
+fi
