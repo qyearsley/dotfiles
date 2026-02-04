@@ -20,10 +20,11 @@ Run `funcs` to list all functions with descriptions.
 
 ### Git Utilities
 
-- `git-clean-merged` - Interactively delete local branches merged into main
-- `git-merge-all` - Merge a branch into multiple target branches
+- `git-base-branch` - Detect repository's base branch (main or master)
+- `git-clean-merged` - Interactively delete local branches merged into origin/main
 - `git-old-files` - Find files not modified in a specified time period
-- `git-rebase-all` - Rebase multiple branches onto a base branch
+- `sync-branches` - Update all branches by rebasing (or merging) on base branch
+- `sync-repos` - Sync multiple git repositories
 
 ### Kubernetes Utilities
 
@@ -34,11 +35,6 @@ Run `funcs` to list all functions with descriptions.
 ### General Utilities
 
 - `funcs` - List all custom functions with descriptions
-- `ports` - Show what's listening on which ports
-- `recent` - List recently modified files
-- `src-update-all` - Update source repositories
-- `sync-repos` - Sync multiple git repositories
-- `sshs` - SSH utilities
 - `venv` - Python virtualenv management
 
 ## Resources
