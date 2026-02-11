@@ -19,10 +19,11 @@ export PATH="$HOME/go/bin:$PATH"
 export EDITOR=nvim
 export VISUAL=nvim
 
-# Custom functions - Source from ~/.zsh/functions
+# Custom functions - Auto-load from ~/.zsh/functions
+fpath=(~/.zsh/functions $fpath)
 if [[ -d ~/.zsh/functions ]]; then
   for func in ~/.zsh/functions/*; do
-    source "$func"
+    autoload -Uz ${func:t}
   done
 fi
 
