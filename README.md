@@ -6,7 +6,7 @@ be portable and generally useful across different machines.
 ## Requirements
 
 - Neovim 0.11+ (for config-nvim LSP features)
-- kubectl (for k8s-related Fish/Zsh functions: klogs, kwatch, etc.)
+- kubectl (for k8s-related Fish/Zsh functions: klogs, kns, kx, etc.)
 - Git (for all git-* functions)
 
 ## Sync Scripts

@@ -1,0 +1,9 @@
+.DS_Store
+*.swp
+*~
+.ruff_cache/
+.env*
+*.key
+*.pem
+*.p12
+credentials*.json

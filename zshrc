@@ -4,7 +4,7 @@
 #   ~/.zshenv       — env vars for all shells (PATH, EDITOR, GOPATH)
 #   ~/.zprofile     — login-only setup (Homebrew, pyenv)
 #   ~/.zsh/
-#     functions.zsh — shared functions (kns, kx, venv)
+#     functions/    — autoloaded functions (kns, kx, venv)
 #     completions/  — cached completions (_kubectl)
 #   ~/.zshrc.local  — host-specific config (tokens, work aliases/functions)
 
@@ -42,7 +42,10 @@ alias la='ls -a'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias k=kubectl
-source ~/.zsh/functions.zsh
+fpath=(~/.zsh/functions $fpath)
+for func in ~/.zsh/functions/*; do
+  autoload -Uz ${func:t}
+done
 
 # Host-specific config (tokens, work aliases/functions — not shared across machines)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
