@@ -29,10 +29,14 @@ setopt +o nomatch         # let globs pass through unmatched (e.g. scp host:*)
 # Tools — external integrations
 command -v starship &>/dev/null && eval "$(starship init zsh)"
 export NVM_DIR="$HOME/.nvm"  # NVM lazy-loaded; stubs replace themselves on first call
-nvm()  { unfunction nvm node npm npx 2>/dev/null; \. "/opt/homebrew/opt/nvm/nvm.sh"; nvm "$@"; }
-node() { nvm use default >/dev/null; unfunction node; node "$@"; }
-npm()  { nvm use default >/dev/null; unfunction npm;  npm  "$@"; }
-npx()  { nvm use default >/dev/null; unfunction npx;  npx  "$@"; }
+_nvm_load() {
+  unfunction nvm node npm npx _nvm_load 2>/dev/null
+  \. "$NVM_DIR/nvm.sh" 2>/dev/null || \. "/opt/homebrew/opt/nvm/nvm.sh" 2>/dev/null || \. "/usr/local/opt/nvm/nvm.sh" 2>/dev/null
+}
+nvm()  { _nvm_load; nvm "$@"; }
+node() { _nvm_load; node "$@"; }
+npm()  { _nvm_load; npm "$@"; }
+npx()  { _nvm_load; npx "$@"; }
 
 # Aliases & functions
 alias vim=nvim

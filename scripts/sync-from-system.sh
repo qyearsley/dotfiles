@@ -2,7 +2,7 @@
 # Sync configs FROM system TO this repo
 # Checks modification times and prompts before overwriting
 
-set -e
+set -eu
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 

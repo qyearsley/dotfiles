@@ -23,9 +23,9 @@ vim.opt.scrolloff = 8
 vim.opt.list = true
 vim.opt.listchars = { tab = "→ ", trail = "·", nbsp = "␣" }
 
--- Auto-detect macOS system theme
-local theme = vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null')
-vim.opt.background = theme:match('Dark') and 'dark' or 'light'
+-- Auto-detect macOS system theme (defaults to light if command fails)
+local ok, theme = pcall(vim.fn.system, 'defaults read -g AppleInterfaceStyle 2>/dev/null')
+vim.opt.background = (ok and theme:match('Dark')) and 'dark' or 'light'
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

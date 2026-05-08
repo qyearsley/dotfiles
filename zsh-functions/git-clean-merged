@@ -28,7 +28,7 @@ function git-clean-merged() {
     return 0
   fi
 
-  echo "\nThe following branches have been merged into 'origin/$base_branch':\n"
+  printf "\nThe following branches have been merged into 'origin/%s':\n\n" "$base_branch"
   for branch in $merged_branches; do
     # Check if remote branch exists
     local remote_status="no remote"
@@ -44,14 +44,14 @@ function git-clean-merged() {
     printf "  - %-25s [%s] %s\n" "$branch" "$remote_status" "$last_commit"
   done
 
-  echo -n "\nDelete these local branches? [y/N] "
+  printf "\nDelete these local branches? [y/N] "
   read -r response
 
   if [[ "$response" =~ ^[Yy]$ ]]; then
     for branch in $merged_branches; do
       git branch -d "$branch" && echo "Deleted: $branch"
     done
-    echo "\nCleanup complete!"
+    printf "\nCleanup complete!\n"
   else
     echo "Cancelled."
   fi
