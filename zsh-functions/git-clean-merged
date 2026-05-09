@@ -21,7 +21,7 @@ function git-clean-merged() {
   local current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
   # Get merged branches excluding base branch and current branch
-  local merged_branches=($(git branch --merged "origin/$base_branch" | grep -v "\*" | grep -v "^[[:space:]]*$base_branch\$" | sed 's/^[[:space:]]*//'))
+  local merged_branches=($(git branch --merged "origin/$base_branch" --format='%(refname:short)' | grep -v "^$base_branch\$" | grep -v "^$current_branch\$"))
 
   if [ ${#merged_branches[@]} -eq 0 ]; then
     echo "No merged branches to clean up."

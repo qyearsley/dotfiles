@@ -17,14 +17,15 @@ Smart completions from man pages, syntax highlighting as you type, sane defaults
 
 ### Kubernetes
 
-- `klogs <label>` - Tail logs for pods by label
 - `kns [namespace]` - Get/set kubectl namespace
 - `kx [context]` - Get/set kubectl context
 
 ### Git & Utils
 
 - `git-base-branch` - Determine main/master
-- `sync-branches` - Sync multiple branches
+- `git-clean-merged` - Delete branches merged into origin/main
+- `sync-branches` - Rebase all local branches on base branch
+- `sync-repos` - Sync multiple git repositories
 - `venv [name]` - Python virtualenv management
 
 Run `functions` to list all (includes built-ins).

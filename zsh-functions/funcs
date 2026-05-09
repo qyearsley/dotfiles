@@ -4,7 +4,12 @@ function funcs() {
 
   for func_file in ~/.zsh/functions/*; do
     local func_name="${func_file:t}"
-    local description=$(head -n 1 "$func_file" | sed 's/^# //')
-    printf "  %-20s %s\n" "$func_name" "$description"
+    local first_line
+    first_line=$(head -n 1 "$func_file")
+    if [[ "$first_line" == \#* ]]; then
+      printf "  %-20s %s\n" "$func_name" "${first_line#\# }"
+    else
+      printf "  %-20s %s\n" "$func_name" "(no description)"
+    fi
   done | sort
 }

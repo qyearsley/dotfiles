@@ -22,13 +22,11 @@ Run `funcs` to list all functions with descriptions.
 
 - `git-base-branch` - Detect repository's base branch (main or master)
 - `git-clean-merged` - Interactively delete local branches merged into origin/main
-- `git-old-files` - Find files not modified in a specified time period
 - `sync-branches` - Update all branches by rebasing (or merging) on base branch
 - `sync-repos` - Sync multiple git repositories
 
 ### Kubernetes Utilities
 
-- `klogs` - Tail logs for pods matching a label/component
 - `kns` - Set or view current kubectl namespace
 - `kx` - Switch kubectl context
 

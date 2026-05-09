@@ -14,5 +14,5 @@ if status is-interactive
     alias ll 'ls -l'
     alias la 'ls -a'
     alias .. 'cd ..'
-    alias k kubectl
+    alias k 'kubectl'
 end

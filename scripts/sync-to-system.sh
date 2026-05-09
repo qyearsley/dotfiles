@@ -42,8 +42,8 @@ sync_file() {
     if [[ -e "$dest" ]]; then
         local src_time
         local dest_time
-        src_time=$(stat -f %m "$src_full" 2>/dev/null || stat -c %Y "$src_full")
-        dest_time=$(stat -f %m "$dest" 2>/dev/null || stat -c %Y "$dest")
+        src_time=$(stat -f %m "$src_full" 2>/dev/null || stat -c %Y "$src_full" 2>/dev/null || echo 0)
+        dest_time=$(stat -f %m "$dest" 2>/dev/null || stat -c %Y "$dest" 2>/dev/null || echo 0)
 
         if [[ $dest_time -gt $src_time ]]; then
             echo -e "${YELLOW}⚠ System file is newer: $dest${NC}"

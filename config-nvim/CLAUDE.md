@@ -1,6 +1,6 @@
 # Neovim Configuration
 
-Lightweight Neovim config with native LSP and completion. Helix is the primary editor; this is a fallback.
+Lightweight Neovim config with native LSP and completion.
 
 ## Structure
 
@@ -19,6 +19,10 @@ Lightweight Neovim config with native LSP and completion. Helix is the primary e
 - **nvim-cmp** - Completion (LSP, buffer, path sources)
 - **telescope.nvim** - Fuzzy finder
 - **gitsigns.nvim** - Git change markers
+- **nvim-treesitter** - Syntax highlighting
+- **lualine.nvim** - Statusline
+- **which-key.nvim** - Keybinding hints
+- **kanagawa.nvim** - Color scheme (lotus/light variant)
 
 ## Keybindings
 

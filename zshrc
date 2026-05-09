@@ -47,7 +47,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias k=kubectl
 fpath=(~/.zsh/functions $fpath)
-for func in ~/.zsh/functions/*; do
+for func in ~/.zsh/functions/*(N); do
   autoload -Uz ${func:t}
 done
 

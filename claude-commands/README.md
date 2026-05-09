@@ -4,7 +4,7 @@ Custom slash commands for [Claude Code](https://docs.claude.com/en/docs/claude-c
 
 ## Setup
 
-Place these files in your project's `.claude/commands/` directory, or in `~/.config/claude/commands/` for global commands.
+Place these files in your project's `.claude/commands/` directory, or in `~/.claude/commands/` for global commands.
 
 ## Available Commands
 
