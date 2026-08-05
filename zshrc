@@ -12,10 +12,11 @@
 export ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump"
 fpath=(~/.zsh/completions $fpath)
 autoload -Uz compinit
+[[ -d ${ZSH_COMPDUMP:h} ]] || mkdir -p ${ZSH_COMPDUMP:h}
 if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
-  compinit                # full rebuild if cache is >24h old
+  compinit -d "$ZSH_COMPDUMP"     # full rebuild if cache is >24h old
 else
-  compinit -C             # use cache
+  compinit -C -d "$ZSH_COMPDUMP"  # use cache
 fi
 HISTSIZE=10000
 SAVEHIST=10000

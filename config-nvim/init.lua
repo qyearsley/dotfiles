@@ -32,7 +32,7 @@ vim.g.maplocalleader = " "
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
@@ -245,7 +245,8 @@ require("lazy").setup({
   },
 })
 
-vim.cmd.colorscheme("kanagawa-lotus")
+-- Follow the detected system theme: lotus is the light variant, wave the dark one.
+vim.cmd.colorscheme(vim.o.background == "dark" and "kanagawa-wave" or "kanagawa-lotus")
 
 -- Essential Keymaps
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
