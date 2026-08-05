@@ -3,6 +3,7 @@ format = "$python$directory$git_branch$git_status$status$shell"
 
 [directory]
 truncation_length = 0
+truncate_to_repo = false
 
 [git_branch]
 symbol = ""

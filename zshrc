@@ -4,13 +4,13 @@
 #   ~/.zshenv       — env vars for all shells (PATH, EDITOR, GOPATH)
 #   ~/.zprofile     — login-only setup (Homebrew, pyenv)
 #   ~/.zsh/
-#     functions/    — autoloaded functions (kns, kx, venv)
+#     functions.zsh — shared functions (kns, kx, venv)
 #     completions/  — cached completions (_kubectl)
 #   ~/.zshrc.local  — host-specific config (tokens, work aliases/functions)
 
 # Shell — completions, history, key bindings, options
 export ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump"
-fpath=(~/.zsh/completions $fpath)
+fpath=(~/.local/share/zsh/site-functions ~/.zsh/completions $fpath)
 autoload -Uz compinit
 [[ -d ${ZSH_COMPDUMP:h} ]] || mkdir -p ${ZSH_COMPDUMP:h}
 if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
@@ -47,10 +47,8 @@ alias la='ls -a'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias k=kubectl
-fpath=(~/.zsh/functions $fpath)
-for func in ~/.zsh/functions/*(N); do
-  autoload -Uz ${func:t}
-done
+
+source ~/.zsh/functions.zsh
 
 # Host-specific config (tokens, work aliases/functions — not shared across machines)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

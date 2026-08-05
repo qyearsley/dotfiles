@@ -12,16 +12,10 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Configs to sync: [source_path_in_repo]:[dest_path]
-# Note: .gitconfig excluded (often has host-specific settings)
-declare -a CONFIGS=(
-    "config-nvim/init.lua:$HOME/.config/nvim/init.lua"
-    "config-fish/config.fish:$HOME/.config/fish/config.fish"
-    "config-fish/functions:$HOME/.config/fish/functions"
-    "zsh-functions:$HOME/.zsh/functions"
-    "starship.toml:$HOME/.config/starship.toml"
-    "zshrc:$HOME/.zshrc"
-)
+# Configs to sync are defined in scripts/configs.sh (shared with sync-from-system.sh
+# and sync-status.sh) as [source_path_in_repo]:[dest_path].
+# shellcheck source=scripts/configs.sh
+source "$REPO_ROOT/scripts/configs.sh"
 
 echo -e "${BLUE}=== Syncing configs FROM repo TO system ===${NC}"
 echo "Repo: $REPO_ROOT"
@@ -56,11 +50,13 @@ sync_file() {
         fi
     fi
 
-    # Perform sync
+    # Perform sync. No --delete: it would silently remove system files that
+    # aren't in the repo (host-local fish functions, for example).
+    # Run scripts/sync-status.sh first to see what differs.
     echo -e "${GREEN}→ Syncing: $src → $dest${NC}"
     if [[ -d "$src_full" ]]; then
         mkdir -p "$dest"
-        rsync -av --delete "$src_full/" "$dest/"
+        rsync -av "$src_full/" "$dest/"
     else
         mkdir -p "$(dirname "$dest")"
         cp "$src_full" "$dest"
