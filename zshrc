@@ -18,14 +18,17 @@ if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
 else
   compinit -C -d "$ZSH_COMPDUMP"  # use cache
 fi
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_FIND_NO_DUPS
+HISTORY_IGNORE='(exit|l|ls|ll|..)'  # skip saving lines never worth recalling
 bindkey -e                # emacs mode (zsh defaults to vi when EDITOR contains "vi")
 bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
 ulimit -n 4096            # raise open file limit (Ansible needs this)
 setopt +o nomatch         # let globs pass through unmatched (e.g. scp host:*)
+cdpath=(~/src ~/github)   # `cd guano` from anywhere; a local ./guano still wins
+setopt AUTO_CD            # bare directory name cds there (real commands win)
 
 # Tools — external integrations
 command -v starship &>/dev/null && eval "$(starship init zsh)"
