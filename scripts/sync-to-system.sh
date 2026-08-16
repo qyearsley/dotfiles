@@ -51,7 +51,7 @@ sync_file() {
     fi
 
     # Perform sync. No --delete: it would silently remove system files that
-    # aren't in the repo (host-local fish functions, for example).
+    # aren't in the repo (host-local completions under ~/.zsh, for example).
     # Run scripts/sync-status.sh first to see what differs.
     echo -e "${GREEN}→ Syncing: $src → $dest${NC}"
     if [[ -d "$src_full" ]]; then

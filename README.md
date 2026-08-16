@@ -6,17 +6,19 @@ be portable and generally useful across different machines.
 ## Requirements
 
 - Neovim 0.11+ (for config-nvim LSP features)
-- kubectl (for k8s-related Fish/Zsh functions: kns, kx)
-- Git (for all git-* functions)
+- kubectl (for the k8s Zsh functions: kns, kx)
+- Git
 
 ## Sync Scripts
 
 Helper scripts to keep configs in sync between this repo and your system:
 
+- `./scripts/sync-status.sh` - Report drift without changing anything (run this first)
 - `./scripts/sync-from-system.sh` - Pull configs from system into repo
 - `./scripts/sync-to-system.sh` - Deploy configs from repo to system
 
-Both scripts check modification times and prompt before overwriting newer files.
+The sync scripts check modification times and prompt before overwriting newer
+files. Neither deletes files, but both overwrite whole ones.
 
 ## Philosophy
 
@@ -32,13 +34,11 @@ Install using your package manager (`brew install <package>` on macOS).
 
 ### Shells & Prompts
 
-- fish - Smart completions and syntax highlighting built-in (non-POSIX)
 - starship - Fast cross-shell prompt with minimal config
 
 ### Editors
 
 - neovim - Modern vim with native LSP (primary editor, configured in config-nvim/)
-- helix - Modal editor with zero-config LSP and treesitter (optional alternative)
 
 ### Modern CLI Replacements
 
@@ -62,5 +62,4 @@ Install using your package manager (`brew install <package>` on macOS).
 ## Resources
 
 - [Starship config](https://starship.rs/config/)
-- [Fish tutorial](https://fishshell.com/docs/current/tutorial.html)
 - [Modern Unix tools](https://github.com/ibraheemdev/modern-unix)

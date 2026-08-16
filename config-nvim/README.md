@@ -10,7 +10,7 @@ Minimal Neovim setup with LSP and completion. All configuration is in `init.lua`
 - **Navigation**: Telescope fuzzy finder, netrw file browser, which-key hints
 - **Git**: Gitsigns for inline change markers
 - **Statusline**: Minimal lualine (mode, filename, filetype, diagnostics, position)
-- **Theme**: Kanagawa Lotus (light, muted, Helix-inspired)
+- **Theme**: Kanagawa, following the macOS system theme (lotus when light, wave when dark)
 
 Leader key is `Space`. Keybindings are documented in init.lua.
 

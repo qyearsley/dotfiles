@@ -7,9 +7,7 @@ Lightweight Neovim config with native LSP and completion.
 ```
 ~/.config/nvim/
 ├── init.lua           # Main configuration
-├── lazy-lock.json     # Plugin versions
-└── colors/            # Custom themes
-    └── NeoSolarized.vim
+└── lazy-lock.json     # Plugin versions
 ```
 
 ## Plugins

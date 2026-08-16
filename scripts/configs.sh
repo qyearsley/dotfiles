@@ -8,10 +8,10 @@
 # (gpg x509 signing program, user.email) that should not be shared.
 # ~/.zshrc.local is excluded by design: it holds tokens and is never tracked.
 
+# shellcheck disable=SC2034  # CONFIGS is consumed by the scripts that source this
 declare -a CONFIGS=(
     "config-nvim/init.lua:$HOME/.config/nvim/init.lua"
-    "config-fish/config.fish:$HOME/.config/fish/config.fish"
-    "config-fish/functions:$HOME/.config/fish/functions"
+    "config-nvim/lazy-lock.json:$HOME/.config/nvim/lazy-lock.json"
     "zsh-functions.zsh:$HOME/.zsh/functions.zsh"
     "starship.toml:$HOME/.config/starship.toml"
     "zshrc:$HOME/.zshrc"

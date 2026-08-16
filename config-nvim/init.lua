@@ -11,6 +11,8 @@ vim.opt.smartindent = true
 vim.opt.joinspaces = false
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true  -- case-insensitive search unless the pattern has capitals
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 300
@@ -19,6 +21,7 @@ vim.opt.completeopt = "menu,menuone,noselect"
 vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.swapfile = false
+vim.opt.undofile = true   -- persist undo history across sessions (no swap/backup files)
 vim.opt.scrolloff = 8
 vim.opt.list = true
 vim.opt.listchars = { tab = "→ ", trail = "·", nbsp = "␣" }
@@ -78,7 +81,7 @@ require("lazy").setup({
         return
       end
       configs.setup({
-        ensure_installed = { "lua", "python", "typescript", "javascript", "markdown", "bash" },
+        ensure_installed = { "lua", "python", "typescript", "javascript", "markdown", "bash", "yaml", "json" },
         highlight = { enable = true },
         indent = { enable = true },
       })
