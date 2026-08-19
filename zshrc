@@ -32,15 +32,26 @@ setopt AUTO_CD            # bare directory name cds there (real commands win)
 
 # Tools — external integrations
 command -v starship &>/dev/null && eval "$(starship init zsh)"
-export NVM_DIR="$HOME/.nvm"  # NVM lazy-loaded; stubs replace themselves on first call
-_nvm_load() {
-  unfunction nvm node npm npx _nvm_load 2>/dev/null
-  \. "$NVM_DIR/nvm.sh" 2>/dev/null || \. "/opt/homebrew/opt/nvm/nvm.sh" 2>/dev/null || \. "/usr/local/opt/nvm/nvm.sh" 2>/dev/null
-}
-nvm()  { _nvm_load; nvm "$@"; }
-node() { _nvm_load; node "$@"; }
-npm()  { _nvm_load; npm "$@"; }
-npx()  { _nvm_load; npx "$@"; }
+# NVM lazy-loaded — sourcing nvm.sh costs seconds. Each stub drops all four,
+# sources nvm.sh, then re-dispatches; after the first call these are real
+# commands on PATH.
+#
+# The unfunction is inline in every stub rather than in a shared helper. A
+# helper is a second function that has to survive into every shell, and tools
+# that snapshot shell functions (Claude Code) kept the stubs while dropping the
+# helper — so each stub called itself until FUNCNEST. Inline, it always runs
+# first, and an unreachable nvm.sh just falls through to whatever is on PATH.
+export NVM_DIR="$HOME/.nvm"
+for _cmd in nvm node npm npx; do
+  eval "${_cmd}() {
+    unfunction nvm node npm npx 2>/dev/null
+    \. \"\$NVM_DIR/nvm.sh\" 2>/dev/null ||
+      \. /opt/homebrew/opt/nvm/nvm.sh 2>/dev/null ||
+      \. /usr/local/opt/nvm/nvm.sh 2>/dev/null
+    ${_cmd} \"\$@\"
+  }"
+done
+unset _cmd
 
 # Aliases & functions
 alias vim=nvim
