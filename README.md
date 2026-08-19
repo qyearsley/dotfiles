@@ -14,11 +14,14 @@ be portable and generally useful across different machines.
 Helper scripts to keep configs in sync between this repo and your system:
 
 - `./scripts/sync-status.sh` - Report drift without changing anything (run this first)
-- `./scripts/sync-from-system.sh` - Pull configs from system into repo
-- `./scripts/sync-to-system.sh` - Deploy configs from repo to system
+- `./scripts/sync.sh to` - Deploy configs from repo to system
+- `./scripts/sync.sh from` - Pull configs from system into repo
 
-The sync scripts check modification times and prompt before overwriting newer
-files. Neither deletes files, but both overwrite whole ones.
+Which files are covered is defined by the config map in `scripts/configs.sh`.
+`sync.sh` skips files whose contents already match, and prompts before
+overwriting a destination that is newer than its source — add `--yes` to skip
+the prompt, which is also what happens automatically when stdin is not a
+terminal. Neither script deletes files, but both overwrite whole ones.
 
 ## Philosophy
 

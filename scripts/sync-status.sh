@@ -11,12 +11,6 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # shellcheck source=scripts/configs.sh
 source "$REPO_ROOT/scripts/configs.sh"
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
-
 drift=0
 
 # Which side is newer, as a hint for the direction to sync.
@@ -42,7 +36,7 @@ for config in "${CONFIGS[@]}"; do
         continue
     fi
     if [[ ! -e "$live" ]]; then
-        printf "  ${YELLOW}%-10s${NC} %s\n" "ONLY-REPO" "$rel (not deployed to ${live/#$HOME/\~})"
+        printf "  ${YELLOW}%-10s${NC} %s\n" "ONLY-REPO" "$rel (not deployed to ${live/#$HOME/~})"
         drift=1
         continue
     fi
