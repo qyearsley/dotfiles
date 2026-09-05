@@ -1,0 +1,8 @@
+.DS_Store
+.claude/settings.local.json
+settings.local.json
+CLAUDE.local.md
+.claude/worktrees/
+.worktrees/
+.vscode/
+__pycache__/

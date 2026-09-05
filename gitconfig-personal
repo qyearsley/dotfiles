@@ -1,0 +1,26 @@
+# Settings for everything under ~/github, which is personal work.
+#
+# Included from ~/.gitconfig by an `includeIf "gitdir:~/github/"`, placed after
+# the `[include]` of ~/.gitconfig.local so that this wins. That ordering is the
+# whole point: a work machine's local half sets a work address and turns on
+# commit signing, and neither belongs on a personal repo pushed to github.com.
+#
+# Signing is off rather than merely unconfigured. The signing program a work
+# machine names does not exist anywhere else, so a signed commit here would
+# either fail to verify for everyone or fail to make at all on another machine.
+#
+# `bookbot` is the repo that proved this was needed: it was the one directory
+# under ~/github with no local override, so it inherited both and its whole
+# history was signed under the wrong address.
+
+[user]
+	# The address five of these repos already have in their history. Swap in
+	# 53232742+qyearsley@users.noreply.github.com if you would rather GitHub
+	# hid it.
+	email = qyearsley@gmail.com
+
+[commit]
+	gpgsign = false
+
+[tag]
+	gpgsign = false

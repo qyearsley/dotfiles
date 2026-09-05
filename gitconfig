@@ -1,7 +1,50 @@
-# [user] and [credential] sections omitted;
-# [credential] section is added by `gh auth login`
+# The portable half of ~/.gitconfig.
+#
+# Everything host-specific lives in ~/.gitconfig.local, included at the bottom:
+# your name and email, and any signing setup, which on a work machine names a
+# program that does not exist anywhere else. Git reads the include last, so that
+# file can also override anything here.
+#
+# This file used to be tracked and never synced, excluded from scripts/configs.sh
+# as "host-specific" — but only [user] and the signing block ever were. The
+# aliases, the push defaults, the delta pager and core.excludesFile are portable
+# and were simply missing from the shared copy, which made this file decoration.
+
 [init]
 	defaultBranch = main
+
 [alias]
 	co = checkout
 	nb = checkout -b
+
+[push]
+	# Create the upstream branch on first push instead of erroring.
+	autoSetupRemote = true
+	# Push the current branch to its own name, never anything else.
+	default = current
+
+[core]
+	# Tracked as gitignore_global in this repo. `~` rather than an absolute
+	# path, so the same line works on every machine.
+	excludesFile = ~/.gitignore_global
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true    # n/N to jump between files in diff output
+	side-by-side = false
+	line-numbers = true
+
+# Machine-specific settings: [user], and signing. Kept out of this repo, which is
+# public. Git ignores a missing include, so a fresh machine works before the
+# file exists — it just commits as whoever `git config --global user.name` says.
+[include]
+	path = ~/.gitconfig.local
+
+# Everything under ~/github is personal: personal address, and never signed.
+# After the include above, deliberately, so it overrides whatever a machine's
+# local half sets. See gitconfig-personal for why.
+[includeIf "gitdir:~/github/"]
+	path = ~/.gitconfig-personal
