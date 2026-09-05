@@ -27,6 +27,9 @@
 	# Tracked as gitignore_global in this repo. `~` rather than an absolute
 	# path, so the same line works on every machine.
 	excludesFile = ~/.gitignore_global
+	# Needs delta on PATH (`brew install git-delta`). Portable in the sense
+	# that it is not machine-specific, but not free: without the binary,
+	# every diff prints "cannot run delta" before falling back to less.
 	pager = delta
 
 [interactive]

@@ -6,6 +6,8 @@ be portable and generally useful across different machines.
 ## Requirements
 
 - Neovim 0.11+ (for config-nvim LSP features)
+- git-delta (`brew install git-delta`) — the tracked `gitconfig` sets it as the
+  pager, and git prints an error before falling back if it is missing
 - kubectl (for the k8s Zsh functions: kns, kx)
 - Git
 

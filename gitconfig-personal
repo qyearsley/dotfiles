@@ -10,8 +10,9 @@
 # either fail to verify for everyone or fail to make at all on another machine.
 #
 # `bookbot` is the repo that proved this was needed: it was the one directory
-# under ~/github with no local override, so it inherited both and its whole
-# history was signed under the wrong address.
+# under ~/github with no local override, so it inherited both. Its history was
+# rewritten before it was ever pushed, so it no longer shows the problem -- but
+# it is the reason the rule is here rather than in six more .git/config files.
 
 [user]
 	# The address five of these repos already have in their history. Swap in
