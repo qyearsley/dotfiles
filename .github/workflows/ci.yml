@@ -1,0 +1,47 @@
+name: CI
+
+# Pull requests as well as pushes, because a check that only runs after the
+# push has already landed reports a problem that is already in main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shell:
+    name: Check the shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # shellcheck understands bash, not zsh. `scripts/` is bash and gets the
+      # full treatment; the zsh files get a syntax check from zsh itself, which
+      # is the most any linter will do for them -- `zshrc` uses glob qualifiers
+      # like `(#qN.mh+24)` that shellcheck cannot parse at all.
+      - run: shellcheck scripts/*.sh
+
+      - run: sudo apt-get update && sudo apt-get install --no-install-recommends -y zsh
+      - run: zsh -n zshrc
+      - run: zsh -n zsh-functions.zsh
+
+  sync-map:
+    name: Every file in the sync map exists
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # The map in scripts/configs.sh names a repo-side file for each config.
+      # A typo there is invisible until someone runs sync.sh and it quietly
+      # skips a file, so check the repo half of every pair resolves.
+      - run: |
+          set -eu
+          source scripts/configs.sh
+          status=0
+          for entry in "${CONFIGS[@]}"; do
+            repo_path="${entry%%:*}"
+            if [ ! -f "$repo_path" ]; then
+              echo "Missing from the repo: $repo_path" >&2
+              status=1
+            fi
+          done
+          exit $status
+        shell: bash
