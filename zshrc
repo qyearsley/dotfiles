@@ -18,6 +18,10 @@ if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
 else
   compinit -C -d "$ZSH_COMPDUMP"  # use cache
 fi
+# macOS gets HISTFILE from /etc/zshrc, but nothing else does and zsh has no
+# default for it. Without it history stays in memory: SAVEHIST and SHARE_HISTORY
+# have nothing to write to, so nothing survives the session.
+HISTFILE="${HISTFILE:-$HOME/.zsh_history}"
 HISTSIZE=100000
 SAVEHIST=100000
 setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_FIND_NO_DUPS

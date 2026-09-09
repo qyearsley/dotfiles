@@ -87,7 +87,8 @@ See individual README files in each directory for detailed documentation.
 
 ## Noteworthy CLI tools
 
-Install using your package manager (`brew install <package>` on macOS).
+Install using your package manager (`brew install <package>` on macOS). This
+list is what actually gets used day to day, not everything worth trying.
 
 ### Shells & Prompts
 
@@ -99,12 +100,8 @@ Install using your package manager (`brew install <package>` on macOS).
 
 ### Modern CLI Replacements
 
+- ack - Fast `grep` for code, with per-language filters
 - bat - `cat` with syntax highlighting and git integration
-- eza - `ls` with git status and colors
-- fd - `find` with better defaults, respects .gitignore
-- ripgrep (rg) - Fast `grep` optimized for code
-- duf - `df` with readable output
-- htop - Interactive `top` with visual bars
 - delta - `git diff` with syntax highlighting
 - jq - JSON processor for CLI
 
