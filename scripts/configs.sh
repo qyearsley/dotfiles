@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Shared setup for sync.sh and sync-status.sh: the config map plus the colours
-# both use. Keeping it in one place means the scripts can't drift.
+# The config map, plus the colours and the mtime helper that sync.sh uses.
+# Kept separate so CI can source the map on its own and check that every
+# repo-side path still resolves.
 #
 # Format: [path_in_repo]:[path_on_system]
 #
@@ -27,8 +28,7 @@ declare -a CONFIGS=(
     "gitconfig-personal:$HOME/.gitconfig-personal"
 )
 
-# Modification time in epoch seconds, on GNU and BSD alike. Shared so the two
-# scripts cannot disagree about it.
+# Modification time in epoch seconds, on GNU and BSD alike.
 #
 # GNU first, deliberately. BSD `stat -c` is an illegal option: it prints usage
 # to stderr, writes nothing to stdout, and exits 1, so the fallback is clean.

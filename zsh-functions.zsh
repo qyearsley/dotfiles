@@ -1,9 +1,9 @@
 # ~/.zsh/functions.zsh -- portable shell functions (shared across machines)
 
-# Switch kubectl namespace, or list contexts if no arg given
+# Switch kubectl namespace, or list namespaces if no arg given
 kns() {
   if [ $# -eq 0 ]; then
-    kubectl config get-contexts
+    kubectl get namespaces
   else
     kubectl config set-context --current --namespace="$1"
   fi

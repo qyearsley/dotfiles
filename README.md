@@ -12,19 +12,20 @@ close to defaults.
 | `gitconfig-personal`            | Identity for repos under `~/hobby`             |
 | `config-nvim/`                  | Neovim: `init.lua` and the plugin lockfile     |
 | `starship.toml`                 | Prompt                                         |
-| `scripts/`                      | Sync helpers, driven by `scripts/configs.sh`   |
+| `scripts/`                      | `sync.sh`, driven by the map in `configs.sh`   |
 
 ## Use
 
 ```bash
-./scripts/sync-status.sh   # report drift, change nothing
+./scripts/sync.sh status   # report drift, change nothing
 ./scripts/sync.sh to       # repo -> system
 ./scripts/sync.sh from     # system -> repo
 ```
 
-Run `sync-status.sh` first. Both sync directions overwrite whole files, and
-neither deletes anything. `sync.sh` prompts before it overwrites a destination
-that is newer than its source; `--yes` skips the prompt.
+Run `status` first. Both sync directions overwrite whole files, and neither
+deletes anything. `sync.sh` prompts before it overwrites a destination that is
+newer than its source; `--yes` skips the prompt. `status` exits non-zero when
+anything differs, so it works as a pre-commit check too.
 
 ## Local overrides
 

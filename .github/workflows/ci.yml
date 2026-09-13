@@ -8,8 +8,8 @@ on:
   pull_request:
 
 jobs:
-  shell:
-    name: Check the shell scripts
+  checks:
+    name: Check the scripts and the sync map
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,15 +24,12 @@ jobs:
       - run: zsh -n zshrc
       - run: zsh -n zsh-functions.zsh
 
-  sync-map:
-    name: Every file in the sync map exists
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       # The map in scripts/configs.sh names a repo-side file for each config.
       # A typo there is invisible until someone runs sync.sh and it quietly
       # skips a file, so check the repo half of every pair resolves.
-      - run: |
+      - name: Every file in the sync map exists
+        shell: bash
+        run: |
           set -eu
           source scripts/configs.sh
           status=0
@@ -44,4 +41,3 @@ jobs:
             fi
           done
           exit $status
-        shell: bash

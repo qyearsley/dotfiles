@@ -1,36 +1,54 @@
-# Neovim Configuration
+# Neovim configuration
 
-Minimal Neovim setup with LSP and completion. All configuration is in `init.lua`.
+A small Neovim setup with native LSP and completion. Everything is in
+`init.lua`; `lazy-lock.json` pins the plugin versions.
 
-## Features
+## What it gives you
 
-- **LSP**: Mason auto-installs lua_ls, pyright, ts_ls
-- **Completion**: nvim-cmp with LSP, buffer, and path sources
-- **Syntax**: Neovim's built-in tree-sitter for its bundled parsers (c, lua,
-  markdown, query, vim, vimdoc); Vim regex syntax for everything else
-- **Navigation**: Telescope fuzzy finder, netrw file browser, which-key hints
-- **Git**: Gitsigns for inline change markers
-- **Statusline**: Minimal lualine (mode, filename, filetype, diagnostics, position)
-- **Theme**: Kanagawa, following the terminal's background (lotus when light, wave when dark)
+| Area        | What is set up                                                 |
+| ----------- | -------------------------------------------------------------- |
+| LSP         | Mason installs `lua_ls`, `pyright`, `ts_ls`                     |
+| Completion  | nvim-cmp, with LSP, buffer, and path sources                    |
+| Syntax      | Neovim's bundled tree-sitter parsers; Vim regex for the rest    |
+| Navigation  | Telescope, netrw, which-key                                     |
+| Git         | Gitsigns change markers                                         |
+| Statusline  | lualine                                                          |
+| Theme       | Kanagawa, following the terminal background                     |
 
-Leader key is `Space`. Keybindings are documented in init.lua.
+There is no tree-sitter plugin on purpose. Neovim 0.12 bundles parsers for c,
+lua, markdown, query, vim, and vimdoc, which covers what gets edited here.
 
-## Quick Reference
+## Keybindings
 
-```vim
-:Lazy              " Manage plugins
-:Mason             " Manage LSP servers
-:checkhealth       " Verify setup
-```
+Leader is `Space`.
+
+| Keys                | Action                        |
+| ------------------- | ----------------------------- |
+| `gd` `gD` `gi` `gr` | Definition, declaration, implementation, references |
+| `K`                 | Hover                         |
+| `<leader>rn`        | Rename                        |
+| `<leader>ca`        | Code action                   |
+| `<leader>f`         | Format                        |
+| `[g` `]g`           | Previous, next diagnostic     |
+| `<leader>ff` `fg` `fb` `fr` | Find files, grep, buffers, recent |
+| `[c` `]c`           | Previous, next git hunk       |
+| `<leader>gp`        | Preview hunk                  |
+| `-`                 | File browser                  |
+| `<C-h/j/k/l>`       | Move between splits           |
+| `<Esc>`             | Clear search highlight        |
+
+In insert mode: `<C-Space>` triggers completion, `<CR>` confirms, `<Tab>` and
+`<S-Tab>` move through the menu.
 
 ## Requirements
 
-- Neovim >= 0.12. The config drops tree-sitter and relies on the parsers 0.12
-  bundles. Tested on 0.12.5; not tested on 0.11.
-- Git, Node.js, Python3
+Neovim 0.12 or later, plus Git, Node.js, and Python 3 for the language servers.
+Tested on 0.12.5; not tested on 0.11.
 
-## Resources
+## Handy commands
 
-- [Neovim docs](https://neovim.io/doc/)
-- [lazy.nvim](https://github.com/folke/lazy.nvim)
-- [Mason LSP installer](https://github.com/williamboman/mason.nvim)
+```vim
+:Lazy          " manage plugins
+:Mason         " manage language servers
+:checkhealth   " check the setup
+```
