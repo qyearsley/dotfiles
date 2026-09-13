@@ -26,9 +26,9 @@ vim.opt.scrolloff = 8
 vim.opt.list = true
 vim.opt.listchars = { tab = "→ ", trail = "·", nbsp = "␣" }
 
--- Auto-detect macOS system theme (defaults to light if command fails)
-local ok, theme = pcall(vim.fn.system, 'defaults read -g AppleInterfaceStyle 2>/dev/null')
-vim.opt.background = (ok and theme:match('Dark')) and 'dark' or 'light'
+-- No manual theme detection. The TUI queries the terminal for its background
+-- colour during startup and sets 'background' itself; see :h 'ttyfast'. A
+-- terminal that does not answer leaves it at the default, "dark".
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -245,8 +245,17 @@ require("lazy").setup({
   },
 })
 
--- Follow the detected system theme: lotus is the light variant, wave the dark one.
-vim.cmd.colorscheme(vim.o.background == "dark" and "kanagawa-wave" or "kanagawa-lotus")
+-- Follow 'background': lotus is the light variant, wave the dark one. Applied
+-- three times on purpose. The terminal's answer to the startup query can land
+-- after this file is sourced, and in 0.12 that arrival no longer fires
+-- OptionSet -- so VimEnter is the one that catches it. OptionSet still covers a
+-- background change made later in the session.
+local function apply_theme()
+  vim.cmd.colorscheme(vim.o.background == "dark" and "kanagawa-wave" or "kanagawa-lotus")
+end
+apply_theme()
+vim.api.nvim_create_autocmd("VimEnter", { callback = apply_theme })
+vim.api.nvim_create_autocmd("OptionSet", { pattern = "background", callback = apply_theme })
 
 -- Essential Keymaps
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")

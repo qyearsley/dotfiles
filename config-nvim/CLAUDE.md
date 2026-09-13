@@ -19,7 +19,7 @@ Lightweight Neovim config with native LSP and completion.
 - **gitsigns.nvim** - Git change markers
 - **lualine.nvim** - Statusline
 - **which-key.nvim** - Keybinding hints
-- **kanagawa.nvim** - Color scheme, following the macOS system theme (lotus
+- **kanagawa.nvim** - Color scheme, following the terminal's background (lotus
   when light, wave when dark)
 
 ## Keybindings
