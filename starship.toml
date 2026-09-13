@@ -1,0 +1,25 @@
+add_newline = false
+format = "$python$directory$git_branch$git_status$status$shell"
+
+[directory]
+truncation_length = 0
+truncate_to_repo = false
+
+[git_branch]
+symbol = ""
+
+[shell]
+zsh_indicator = "%"
+bash_indicator = "$"
+format = "$indicator "
+disabled = false
+
+[status]
+disabled = false
+format = "[$status]($style) "
+style = "bold red"
+success_symbol = ""
+
+[python]
+format = "($virtualenv) "
+symbol = ""
