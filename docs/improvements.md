@@ -8,7 +8,7 @@ This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 
 ## At a glance
 
-1. `~/.zshenv` and `~/.zprofile` are still unversioned — M · decision owed
+Nothing open. See `## Settled` for what landed and what was turned down.
 
 ## Working on these
 
@@ -17,27 +17,18 @@ This file is the maintenance backlog: defects, debt, test gaps and doc drift.
   Run `status` first; it exits 1 when anything differs.
 - Public repo. Never commit a work hostname, address, tool name or ticket ID.
 
-## 1. `~/.zshenv` and `~/.zprofile` are still unversioned
-
-**M · decision owed**
-
-They hold `PATH` ordering, pyenv init, `EDITOR`/`VISUAL` and `GOPATH` — the most
-portable part of the shell config, and the only part not tracked here.
-
-Not done on purpose: `.zshenv` also carries three work-specific variables that
-cannot go in a public repo. Moving those to `~/.zshrc.local` first is the obvious
-fix, and it is a real behaviour change — `.zshenv` runs for every shell and
-`.zshrc.local` only for interactive ones, so anything non-interactive that reads
-one of them stops seeing it. Worth deciding deliberately rather than as cleanup.
-
-The `.local` pattern is already in place for `gitconfig` and `zshrc`, and
-`gitconfig-personal` shows the `includeIf` variant.
-
-_Checked 2026-09-18: both files exist in `$HOME` (405 B and 339 B) and neither is
-tracked here._
-
 ## Settled
 
+- **Moving `~/.zshenv` and `~/.zprofile` into this repo — declined 2026-09-18.**
+  They hold `PATH` ordering, pyenv init, `EDITOR`/`VISUAL` and `GOPATH`, and are
+  the only part of the shell config not tracked here. They stay untracked.
+
+  `.zshenv` also carries three work-specific variables that cannot go in a public
+  repo, so tracking it means moving those to `~/.zshrc.local` first — and that is
+  a real behaviour change, not a move: `.zshenv` runs for every shell and
+  `.zshrc.local` only for interactive ones, so anything non-interactive reading
+  one of them would stop seeing it. Not worth that risk for two small files. Do
+  not re-propose.
 - The last two commits had never been deployed — fixed 2026-09-18. `be74c28` and
   `6a09b2c` were committed and never synced, so this machine ran the superseded
   config: nvim still shelled out to `defaults read -g AppleInterfaceStyle` on
