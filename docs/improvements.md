@@ -8,8 +8,7 @@ This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 
 ## At a glance
 
-1. Repos under `~/bootdev` are outside the personal-identity include — S · open
-2. `~/.zshenv` and `~/.zprofile` are still unversioned — M · decision owed
+1. `~/.zshenv` and `~/.zprofile` are still unversioned — M · decision owed
 
 ## Working on these
 
@@ -17,33 +16,7 @@ This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 - Sync: `scripts/sync.sh`. Run `to` to push this repo's files onto the machine.
 - Public repo. Never commit a work hostname, address, tool name or ticket ID.
 
-## 1. Repos under `~/bootdev` are outside the personal-identity include
-
-**S · open**
-
-`gitconfig:55` includes `~/.gitconfig-personal` for `gitdir:~/hobby/` only. The
-four personal repos under `~/bootdev` are not matched, so they fall through to
-the machine defaults, which set the work address and `commit.gpgsign = true`.
-Three of them paper over it with a per-repo `[user]` block in `.git/config`;
-`bookbot` has none, so its next commit takes the work identity.
-
-Either add a second `includeIf "gitdir:~/bootdev/"` line, or move the repos under
-`~/hobby`. A per-repo override in `bookbot` alone fixes today and not the next
-repo cloned there.
-
-_Checked 2026-09-18: in `~/bootdev/bookbot`, `git config --get user.email`
-returns the work address and `commit.gpgsign` is `true`. The same two commands in
-`~/bootdev/asteroids`, `~/bootdev/myagent` and every `~/hobby` repo return the
-personal address and `false`. Existing history is clean — all four `bookbot`
-commits are authored by the personal address and unsigned (`git log
---format='%ae %G?'`)._
-
-This has happened once. In 2026-09 `bookbot` inherited the machine defaults and
-its whole history was signed with the work key under the work address; the
-commits were rewritten because the repo had never been pushed. It would not be
-recoverable the same way a second time.
-
-## 2. `~/.zshenv` and `~/.zprofile` are still unversioned
+## 1. `~/.zshenv` and `~/.zprofile` are still unversioned
 
 **M · decision owed**
 
@@ -64,9 +37,31 @@ tracked here._
 
 ## Settled
 
+- Repos under `~/bootdev` were outside the personal-identity include — landed
+  2026-09-18. `bookbot` was the one with no per-repo `[user]` override, so it
+  resolved to the work address with `commit.gpgsign = true`, and its next commit
+  would have taken both. The same failure had already happened once, and was
+  only recoverable because the repo had never been pushed.
+
+  Fixed by moving the whole directory map out of this repo. The conditional
+  includes now live at the end of `~/.gitconfig.local`, after its `[user]` block
+  so they win, and cover `~/hobby/` and `~/bootdev/`. `gitconfig` here keeps the
+  plain `[include]` and a comment saying why the map is not in it:
+  an `includeIf "gitdir:..."` names a path in a home directory, which is one
+  machine's layout rather than a portable setting, and this file is public.
+  `gitconfig-personal` was rewritten to say *what* a personal repo commits as
+  and stay silent on *where* those repos are.
+
+  _Checked 2026-09-18: `git config --get user.email` and `--get
+  commit.gpgsign` across all thirteen checkouts — the eight under `~/hobby` and
+  `~/bootdev` return the personal address and `false`, the five under `~/mine`,
+  `~/notes` and `~/src` return the work address and `true`. A throwaway `git
+  init` outside both trees still returns the work identity, so the scoping is
+  not over-broad. `git config --show-origin` names
+  `~/.gitconfig-personal` as the source in `bookbot`._
 - `includeIf` repointed from `~/github/` to `~/hobby/` — landed before
-  `6a09b2c`, when the personal repos moved. It did not follow the repos that went
-  to `~/bootdev`; that is item 1.
+  `6a09b2c`, when the personal repos moved. It did not follow the repos that
+  went to `~/bootdev`; that is what the entry above fixes.
 - Git identity and signing for personal repos — landed 2026-09-05: a tracked
   `gitconfig-personal` sets the personal address and turns `commit.gpgsign` and
   `tag.gpgsign` off, included *after* `~/.gitconfig.local` so it wins.

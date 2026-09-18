@@ -1,18 +1,20 @@
-# Settings for everything under ~/hobby, which is personal work on github.com.
+# What a personal repo commits as: the personal address, and never signed.
 #
-# Included from ~/.gitconfig by an `includeIf "gitdir:~/hobby/"`, placed after
-# the `[include]` of ~/.gitconfig.local so that this wins. That ordering is the
-# whole point: a machine's local half can set a different address and turn on
-# commit signing, and neither belongs on a personal repo pushed to github.com.
+# This file says *what*, not *where*. The map of which directories hold personal
+# repos lives at the end of ~/.gitconfig.local, as conditional includes pointing
+# here — a home-directory path is a fact about one machine, and this repo is
+# public. Those includes have to sit after that file's [user] block to win: a
+# machine's local half can set a different address and turn on commit signing,
+# and neither belongs on a repo pushed to github.com.
 #
 # Signing is off rather than merely unconfigured. A signing program named by one
 # machine does not exist on another, so a signed commit here would either fail
 # to verify for everyone or fail to make at all elsewhere.
 #
-# Every repo under ~/hobby today also sets these in its own .git/config, so
-# this file changes nothing right now. It is here for the next repo cloned
-# into ~/hobby, which will not. A repo that inherits another identity does not
-# announce it -- you find out from the history, after pushing it in public.
+# Most personal repos today also set these in their own .git/config, so this
+# file changes nothing for them. It is here for the next one cloned into a
+# personal directory, which will not. A repo that inherits another identity does
+# not announce it -- you find out from the history, after pushing it in public.
 
 [user]
 	# The address these repos already have in their history. Swap in
