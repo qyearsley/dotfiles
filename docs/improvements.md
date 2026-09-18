@@ -13,7 +13,8 @@ This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 ## Working on these
 
 - Lint and CI: `.github/workflows/` runs the checks; there is no test suite.
-- Sync: `scripts/sync.sh`. Run `to` to push this repo's files onto the machine.
+- Sync: `scripts/sync.sh status` reports drift, `to` deploys, `from` captures.
+  Run `status` first; it exits 1 when anything differs.
 - Public repo. Never commit a work hostname, address, tool name or ticket ID.
 
 ## 1. `~/.zshenv` and `~/.zprofile` are still unversioned
@@ -37,6 +38,25 @@ tracked here._
 
 ## Settled
 
+- The last two commits had never been deployed — fixed 2026-09-18. `be74c28` and
+  `6a09b2c` were committed and never synced, so this machine ran the superseded
+  config: nvim still shelled out to `defaults read -g AppleInterfaceStyle` on
+  every start, `~/.zshrc` still set `cdpath` inline, and `knamespace` still ran
+  `kubectl config get-contexts`. `sync.sh to` landed all three.
+
+  The hazard was `cdpath`, which the tracked `zshrc` had moved out to
+  `~/.zshrc.local` as one machine's layout. It was already there, so nothing was
+  lost. Nothing watches for this drift; a pre-commit hook running `sync.sh
+  status` would, and CI cannot — a runner has no live configs to compare.
+
+  _Checked 2026-09-18: `sync.sh status` reports `ok` on all eight pairs
+  afterwards, `zsh -n` passes on both deployed zsh files, and an interactive
+  `zsh -ic 'echo $cdpath'` still prints the five directories._
+- `sync.sh` claimed `status` works as a CI check — corrected 2026-09-18. It
+  cannot: a runner has no live `$HOME` configs, so every entry reports
+  `ONLY-REPO` and the exit is always 1. True as a pre-commit check, and the
+  docstring now says only that. What CI can check — that the repo half of every
+  pair in the map resolves — it already does.
 - Repos under `~/bootdev` were outside the personal-identity include — landed
   2026-09-18. `bookbot` was the one with no per-repo `[user]` override, so it
   resolved to the work address with `commit.gpgsign = true`, and its next commit
@@ -77,12 +97,6 @@ here was verified by running `scripts/sync.sh` against a second machine.
 
 ---
 
-**Conventions**
-
-- Size: `S` under an hour · `M` half a day · `L` more, or needs a design
-  decision.
-- State: `open` · `decision owed` · `blocked on <thing>`.
-- `## At a glance` is the only place an item is restated. Renumber it in the same
-  edit that renumbers a section.
-- Every claim carries a `_Checked:_` line. If you change a claim, change its
-  evidence. Say when something was not verified.
+`S` under an hour · `M` half a day · `L` more, or needs a decision. State is
+`open`, `decision owed`, or `blocked on <thing>`. Every claim carries its
+evidence and a date; say so when something was not verified.

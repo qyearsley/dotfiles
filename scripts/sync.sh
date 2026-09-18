@@ -7,7 +7,11 @@
 #
 # Add --yes to overwrite without prompting. Files are overwritten whole, and
 # nothing is ever deleted. `status` exits 1 when anything differs, so it also
-# works as a pre-commit or CI check.
+# works as a pre-commit check.
+#
+# Not as a CI check: a runner has no live configs to compare against, so every
+# entry reports ONLY-LIVE or ONLY-REPO and the exit is always 1. What CI can
+# check is that the repo half of every pair resolves, and it does.
 #
 # A sync overwrites whole files, so it is only safe when the side you are about
 # to overwrite has nothing unique in it. Run `status` first.
