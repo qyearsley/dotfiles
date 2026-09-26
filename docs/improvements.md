@@ -1,6 +1,6 @@
 # Improvements
 
-> **Status: audited 2026-09-26 against `main` @ `0d624bf`.** Migrated from the
+> **Status: audited 2026-09-18 against `main` @ `6a09b2c`.** Migrated from the
 > unversioned `~/hobby/IMPROVEMENTS.md`, which covered seven repos at once and
 > had drifted; every claim below was re-checked on this date, or carries its
 > own date below.
@@ -9,13 +9,7 @@ This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 
 ## At a glance
 
-- `S`, open. `telescope.nvim` needs `:Lazy update telescope.nvim` run by hand.
-  `config-nvim/init.lua` now asks for `version = "*"` instead of the stale
-  `0.1.x` branch (see Settled), but this session's sandbox blocked the
-  network, so `config-nvim/lazy-lock.json` still pins the old branch commit.
-  Run `nvim --headless "+Lazy! update telescope.nvim" +qa` with network
-  access, then `scripts/sync.sh from` to capture the new lock file, then
-  commit it.
+Nothing open.
 
 See `## Settled` for what landed and what was turned down.
 
@@ -46,11 +40,8 @@ See `## Settled` for what landed and what was turned down.
 - `telescope.nvim` pinned to the `0.1.x` branch, last updated May 2024, with
   `v0.2.0` and `v0.2.1` tagged since — fixed 2026-09-26. `config-nvim/init.lua`
   now asks for `version = "*"` instead of a branch, matching how the plugin's
-  own tags are meant to be tracked. The lock file could not be updated in this
-  session (see `## At a glance`); the change is still safe with the old lock
-  entry — Neovim starts and lazy.nvim's checkout task fails harmlessly against
-  a blocked network, leaving the plugin at its current commit until an update
-  is run.
+  own tags are meant to be tracked. The lock file was updated by hand the same day
+  with `:Lazy update`, which moved telescope to `v0.2.2`.
 
   _Checked 2026-09-26: `nvim --headless --clean -u NONE` with `loadfile` on
   the edited `init.lua` parses cleanly; a full headless start against the
