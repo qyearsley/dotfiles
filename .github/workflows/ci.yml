@@ -10,9 +10,16 @@ on:
 jobs:
   checks:
     name: Check the scripts and the sync map
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+
+      # ubuntu-latest ships shellcheck; macos-latest does not.
+      - if: runner.os == 'macOS'
+        run: brew install shellcheck
 
       # shellcheck understands bash, not zsh. `scripts/` is bash and gets the
       # full treatment; the zsh files get a syntax check from zsh itself, which
@@ -20,9 +27,18 @@ jobs:
       # like `(#qN.mh+24)` that shellcheck cannot parse at all.
       - run: shellcheck scripts/*.sh
 
-      - run: sudo apt-get update && sudo apt-get install --no-install-recommends -y zsh
+      # zsh ships with macOS. Linux needs it installed to run the syntax check
+      # below.
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y zsh
       - run: zsh -n zshrc
       - run: zsh -n zsh-functions.zsh
+
+      # Neither runner ships Neovim, which the init.lua check below needs.
+      - if: runner.os == 'Linux'
+        run: sudo apt-get install --no-install-recommends -y neovim
+      - if: runner.os == 'macOS'
+        run: brew install neovim
 
       # The map in scripts/configs.sh names a repo-side file for each config.
       # A typo there is invisible until someone runs sync.sh and it quietly
@@ -41,3 +57,23 @@ jobs:
             fi
           done
           exit $status
+
+      # configs.sh picks stat's GNU form or its BSD one depending on which
+      # succeeds; run it for real so both runners exercise their half.
+      - name: configs.sh mtime returns a number
+        shell: bash
+        run: |
+          set -eu
+          source scripts/configs.sh
+          result=$(mtime "scripts/configs.sh")
+          [[ $result =~ ^[0-9]+$ ]] || { echo "mtime did not return a number: $result" >&2; exit 1; }
+
+      # loadfile() compiles the file without running it, so this is a syntax
+      # check only -- it never reaches lazy.nvim or the network. cquit sets
+      # the exit code; a plain command-line error from nvim does not.
+      - name: config-nvim/init.lua parses
+        run: |
+          nvim --headless --clean -u NONE -c "lua local ok, err = loadfile('config-nvim/init.lua'); if ok then vim.cmd('cquit 0') else print(err); vim.cmd('cquit 1') end"
+
+      - name: lazy-lock.json is valid JSON
+        run: jq empty config-nvim/lazy-lock.json
