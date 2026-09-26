@@ -25,7 +25,6 @@ declare -a CONFIGS=(
     "zshrc:$HOME/.zshrc"
     "gitconfig:$HOME/.gitconfig"
     "gitignore_global:$HOME/.gitignore_global"
-    "gitconfig-personal:$HOME/.gitconfig-personal"
 )
 
 # Modification time in epoch seconds, on GNU and BSD alike.
