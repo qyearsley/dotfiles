@@ -212,7 +212,7 @@ require("lazy").setup({
   -- Fuzzy finder for files, grep, buffers, etc.
   {
     "nvim-telescope/telescope.nvim",
-    branch = "0.1.x",
+    version = "*",  -- latest tagged release; 0.1.x is stale (last tag May 2024)
     dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
       { "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Find files" },
