@@ -1,14 +1,5 @@
-# The portable half of ~/.gitconfig.
-#
-# Everything host-specific lives in ~/.gitconfig.local, included at the bottom:
-# your name and email, and any signing setup, which on a work machine names a
-# program that does not exist anywhere else. Git reads the include last, so that
-# file can also override anything here.
-#
-# This file used to be tracked and never synced, excluded from scripts/configs.sh
-# as "host-specific" — but only [user] and the signing block ever were. The
-# aliases, the push defaults, the delta pager and core.excludesFile are portable
-# and were simply missing from the shared copy, which made this file decoration.
+# The portable half of ~/.gitconfig. [user], signing, and anything else
+# host-specific go in ~/.gitconfig.local, included at the bottom.
 
 [init]
 	defaultBranch = main

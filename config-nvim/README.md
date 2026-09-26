@@ -15,8 +15,8 @@ A small Neovim setup with native LSP and completion. Everything is in
 | Statusline  | lualine                                                          |
 | Theme       | Kanagawa, following the terminal background                     |
 
-There is no tree-sitter plugin on purpose. Neovim 0.12 bundles parsers for c,
-lua, markdown, query, vim, and vimdoc, which covers what gets edited here.
+There is no tree-sitter plugin. Neovim 0.12 bundles parsers for c, lua,
+markdown, query, vim, and vimdoc, and Vim's regex syntax covers the rest.
 
 ## Keybindings
 

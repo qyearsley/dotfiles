@@ -29,6 +29,3 @@ venv() {
     return 1
   fi
 }
-
-# sw + upstream — from git-workflow (not installed on every host)
-[[ -f ~/.local/share/git-workflow/sw.sh ]] && source ~/.local/share/git-workflow/sw.sh

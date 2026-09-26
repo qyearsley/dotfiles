@@ -8,13 +8,8 @@
 # Every entry is a single file. The scripts copy files, not trees, and CI
 # checks that each repo-side path is a regular file.
 #
-# Two files are excluded on purpose, and both have a tracked half:
-#
-#   ~/.gitconfig.local  — [user] and the signing setup, which names a program
-#                         that exists only on a work machine. Included from the
-#                         bottom of the tracked gitconfig.
-#   ~/.zshrc.local      — tokens, work aliases, and anything else that depends
-#                         on this environment. Sourced from the tracked zshrc.
+# Host-specific config stays out of the map: ~/.gitconfig.local and
+# ~/.zshrc.local. The tracked gitconfig and zshrc include them last.
 
 # shellcheck disable=SC2034  # these are consumed by the scripts that source this
 declare -a CONFIGS=(

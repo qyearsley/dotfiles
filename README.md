@@ -38,7 +38,7 @@ local half last, so the local file wins, and a machine without one still works.
 
 ## Requirements
 
-Neovim 0.12+, git-delta, starship, nvm, and kubectl for the Kubernetes shell
+Neovim 0.12+, git-delta, starship, and kubectl for the Kubernetes shell
 functions.
 
 ## Checks

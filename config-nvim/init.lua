@@ -70,12 +70,8 @@ require("lazy").setup({
     end,
   },
 
-  -- Tree-sitter is deliberately absent. Neovim 0.12 bundles parsers and
-  -- highlighting for c, lua, markdown, query, vim and vimdoc, which covers what
-  -- gets edited here; everything else falls back to Vim's regex syntax. The
-  -- nvim-treesitter plugin was pinned to its `main` branch, which dropped the
-  -- `nvim-treesitter.configs` module, so its config block had been silently
-  -- failing a pcall and installing no parsers at all.
+  -- No tree-sitter plugin: Neovim 0.12 bundles parsers for c, lua, markdown,
+  -- query, vim and vimdoc, and Vim's regex syntax covers the rest.
 
   -- Shows available keybindings on <leader> press
   {
