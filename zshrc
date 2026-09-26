@@ -1,8 +1,8 @@
 # .zshrc -- interactive shell config (portable across machines)
 #
 # Related files:
-#   ~/.zshenv       — env vars for all shells (PATH, EDITOR, GOPATH)
-#   ~/.zprofile     — login-only setup (Homebrew, pyenv)
+#   ~/.zshenv       — env vars for all shells (EDITOR, GOPATH)
+#   ~/.zprofile     — login-only setup (PATH, Homebrew, pyenv)
 #   ~/.zsh/
 #     functions.zsh — shared functions (kns, kx, venv)
 #     completions/  — cached completions (_kubectl)
