@@ -1,14 +1,23 @@
 # Improvements
 
-> **Status: audited 2026-09-18 against `main` @ `6a09b2c`.** Migrated from the
+> **Status: audited 2026-09-26 against `main` @ `0d624bf`.** Migrated from the
 > unversioned `~/hobby/IMPROVEMENTS.md`, which covered seven repos at once and
-> had drifted; every claim below was re-checked on this date.
+> had drifted; every claim below was re-checked on this date, or carries its
+> own date below.
 
 This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 
 ## At a glance
 
-Nothing open. See `## Settled` for what landed and what was turned down.
+- `S`, open. `telescope.nvim` needs `:Lazy update telescope.nvim` run by hand.
+  `config-nvim/init.lua` now asks for `version = "*"` instead of the stale
+  `0.1.x` branch (see Settled), but this session's sandbox blocked the
+  network, so `config-nvim/lazy-lock.json` still pins the old branch commit.
+  Run `nvim --headless "+Lazy! update telescope.nvim" +qa` with network
+  access, then `scripts/sync.sh from` to capture the new lock file, then
+  commit it.
+
+See `## Settled` for what landed and what was turned down.
 
 ## Working on these
 
@@ -19,6 +28,45 @@ Nothing open. See `## Settled` for what landed and what was turned down.
 
 ## Settled
 
+- CI ran only on `ubuntu-latest`, but the README claims macOS and Linux —
+  fixed 2026-09-26. Added a matrix over `ubuntu-latest` and `macos-latest`,
+  gated the Linux-only `apt-get` steps behind `if: runner.os == 'Linux'`, and
+  added the missing tools on macOS via `brew`. Also added two checks CI never
+  had: a smoke test that `mtime` in `scripts/configs.sh` returns a number, and
+  a syntax-only check that `config-nvim/init.lua` still parses (`loadfile`,
+  which never runs the file or touches lazy.nvim). README's Requirements and
+  Checks sections had drifted from what CI actually runs — starship and nvm
+  were missing from Requirements, and Checks only listed two of what is now
+  five checks — both corrected to match.
+
+  _Checked 2026-09-26: `shellcheck scripts/*.sh`, `zsh -n zshrc`, `zsh -n
+  zsh-functions.zsh`, `jq empty config-nvim/lazy-lock.json`, and the
+  `loadfile`/`cquit` init.lua check all pass locally. CI itself was not run —
+  this session cannot trigger GitHub Actions._
+- `telescope.nvim` pinned to the `0.1.x` branch, last updated May 2024, with
+  `v0.2.0` and `v0.2.1` tagged since — fixed 2026-09-26. `config-nvim/init.lua`
+  now asks for `version = "*"` instead of a branch, matching how the plugin's
+  own tags are meant to be tracked. The lock file could not be updated in this
+  session (see `## At a glance`); the change is still safe with the old lock
+  entry — Neovim starts and lazy.nvim's checkout task fails harmlessly against
+  a blocked network, leaving the plugin at its current commit until an update
+  is run.
+
+  _Checked 2026-09-26: `nvim --headless --clean -u NONE` with `loadfile` on
+  the edited `init.lua` parses cleanly; a full headless start against the
+  edited config (temporary `XDG_CONFIG_HOME`, real plugin cache) still starts
+  and quits with no error._
+- README described `gitconfig-personal` as applying to repos under `~/hobby`
+  and said `gitconfig` did the mapping — corrected 2026-09-26. Neither was
+  true after the directory map moved to `~/.gitconfig.local` (see the
+  `includeIf` entry below): `gitconfig-personal` says *what* a personal repo
+  commits as, and stays silent on *where* those repos are. Reworded to say
+  "personal repos" and point at `~/.gitconfig.local` without naming any
+  machine-specific path.
+- `zshrc`'s header comment said `~/.zshenv` holds `PATH` — corrected
+  2026-09-26. `PATH` is actually set in `~/.zprofile`, after Homebrew;
+  `~/.zshenv` only has `EDITOR` and `GOPATH`. Checked by reading both files
+  (untracked, not copied into the repo).
 - **Moving `~/.zshenv` and `~/.zprofile` into this repo — declined 2026-09-18.**
   They hold `PATH` ordering, pyenv init, `EDITOR`/`VISUAL` and `GOPATH`, and are
   the only part of the shell config not tracked here. They stay untracked.
@@ -83,8 +131,9 @@ Nothing open. See `## Settled` for what landed and what was turned down.
 
 ## Not looked at
 
-`config-nvim` beyond the fact that it is tracked, and `starship.toml`. Nothing
-here was verified by running `scripts/sync.sh` against a second machine.
+`starship.toml`, and the rest of `config-nvim` beyond the telescope pin fixed
+2026-09-26. Nothing here was verified by running `scripts/sync.sh` against a
+second machine.
 
 ---
 
