@@ -9,7 +9,6 @@ close to defaults.
 | ------------------------------- | ---------------------------------------------- |
 | `zshrc`, `zsh-functions.zsh`    | Interactive shell: completions, history, aliases |
 | `gitconfig`, `gitignore_global` | Git, portable half                             |
-| `gitconfig-personal`            | Identity for personal repos                    |
 | `config-nvim/`                  | Neovim: `init.lua` and the plugin lockfile     |
 | `starship.toml`                 | Prompt                                         |
 | `scripts/`                      | `sync.sh`, driven by the map in `configs.sh`   |
@@ -34,13 +33,8 @@ local half last, so the local file wins, and a machine without one still works.
 
 | Shared      | Local, untracked                                     |
 | ----------- | ---------------------------------------------------- |
-| `gitconfig` | `~/.gitconfig.local` — `[user]`, commit signing      |
+| `gitconfig` | `~/.gitconfig.local`                                 |
 | `zshrc`     | `~/.zshrc.local` — tokens, host paths, host aliases  |
-
-`gitconfig-personal` says what a personal repo commits as: the personal
-address, never signed. Which directories count as personal is a map of
-`includeIf` blocks at the end of `~/.gitconfig.local` — a fact about one
-machine, so it stays out of this repo.
 
 ## Requirements
 

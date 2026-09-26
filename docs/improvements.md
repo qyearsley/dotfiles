@@ -1,17 +1,10 @@
 # Improvements
 
-> **Status: audited 2026-09-18 against `main` @ `6a09b2c`.** Migrated from the
-> unversioned `~/hobby/IMPROVEMENTS.md`, which covered seven repos at once and
-> had drifted; every claim below was re-checked on this date, or carries its
-> own date below.
-
 This file is the maintenance backlog: defects, debt, test gaps and doc drift.
 
 ## At a glance
 
 Nothing open.
-
-See `## Settled` for what landed and what was turned down.
 
 ## Working on these
 
@@ -19,106 +12,6 @@ See `## Settled` for what landed and what was turned down.
 - Sync: `scripts/sync.sh status` reports drift, `to` deploys, `from` captures.
   Run `status` first; it exits 1 when anything differs.
 - Public repo. Never commit a work hostname, address, tool name or ticket ID.
-
-## Settled
-
-- CI ran only on `ubuntu-latest`, but the README claims macOS and Linux —
-  fixed 2026-09-26. Added a matrix over `ubuntu-latest` and `macos-latest`,
-  gated the Linux-only `apt-get` steps behind `if: runner.os == 'Linux'`, and
-  added the missing tools on macOS via `brew`. Also added two checks CI never
-  had: a smoke test that `mtime` in `scripts/configs.sh` returns a number, and
-  a syntax-only check that `config-nvim/init.lua` still parses (`loadfile`,
-  which never runs the file or touches lazy.nvim). README's Requirements and
-  Checks sections had drifted from what CI actually runs — starship and nvm
-  were missing from Requirements, and Checks only listed two of what is now
-  five checks — both corrected to match.
-
-  _Checked 2026-09-26: `shellcheck scripts/*.sh`, `zsh -n zshrc`, `zsh -n
-  zsh-functions.zsh`, `jq empty config-nvim/lazy-lock.json`, and the
-  `loadfile`/`cquit` init.lua check all pass locally. CI itself was not run —
-  this session cannot trigger GitHub Actions._
-- `telescope.nvim` pinned to the `0.1.x` branch, last updated May 2024, with
-  `v0.2.0` and `v0.2.1` tagged since — fixed 2026-09-26. `config-nvim/init.lua`
-  now asks for `version = "*"` instead of a branch, matching how the plugin's
-  own tags are meant to be tracked. The lock file was updated by hand the same day
-  with `:Lazy update`, which moved telescope to `v0.2.2`.
-
-  _Checked 2026-09-26: `nvim --headless --clean -u NONE` with `loadfile` on
-  the edited `init.lua` parses cleanly; a full headless start against the
-  edited config (temporary `XDG_CONFIG_HOME`, real plugin cache) still starts
-  and quits with no error._
-- README described `gitconfig-personal` as applying to repos under `~/hobby`
-  and said `gitconfig` did the mapping — corrected 2026-09-26. Neither was
-  true after the directory map moved to `~/.gitconfig.local` (see the
-  `includeIf` entry below): `gitconfig-personal` says *what* a personal repo
-  commits as, and stays silent on *where* those repos are. Reworded to say
-  "personal repos" and point at `~/.gitconfig.local` without naming any
-  machine-specific path.
-- `zshrc`'s header comment said `~/.zshenv` holds `PATH` — corrected
-  2026-09-26. `PATH` is actually set in `~/.zprofile`, after Homebrew;
-  `~/.zshenv` only has `EDITOR` and `GOPATH`. Checked by reading both files
-  (untracked, not copied into the repo).
-- **Moving `~/.zshenv` and `~/.zprofile` into this repo — declined 2026-09-18.**
-  They hold `PATH` ordering, pyenv init, `EDITOR`/`VISUAL` and `GOPATH`, and are
-  the only part of the shell config not tracked here. They stay untracked.
-
-  `.zshenv` also carries three work-specific variables that cannot go in a public
-  repo, so tracking it means moving those to `~/.zshrc.local` first — and that is
-  a real behaviour change, not a move: `.zshenv` runs for every shell and
-  `.zshrc.local` only for interactive ones, so anything non-interactive reading
-  one of them would stop seeing it. Not worth that risk for two small files. Do
-  not re-propose.
-- The last two commits had never been deployed — fixed 2026-09-18. `be74c28` and
-  `6a09b2c` were committed and never synced, so this machine ran the superseded
-  config: nvim still shelled out to `defaults read -g AppleInterfaceStyle` on
-  every start, `~/.zshrc` still set `cdpath` inline, and `knamespace` still ran
-  `kubectl config get-contexts`. `sync.sh to` landed all three.
-
-  The hazard was `cdpath`, which the tracked `zshrc` had moved out to
-  `~/.zshrc.local` as one machine's layout. It was already there, so nothing was
-  lost. Nothing watches for this drift; a pre-commit hook running `sync.sh
-  status` would, and CI cannot — a runner has no live configs to compare.
-
-  _Checked 2026-09-18: `sync.sh status` reports `ok` on all eight pairs
-  afterwards, `zsh -n` passes on both deployed zsh files, and an interactive
-  `zsh -ic 'echo $cdpath'` still prints the five directories._
-- `sync.sh` claimed `status` works as a CI check — corrected 2026-09-18. It
-  cannot: a runner has no live `$HOME` configs, so every entry reports
-  `ONLY-REPO` and the exit is always 1. True as a pre-commit check, and the
-  docstring now says only that. What CI can check — that the repo half of every
-  pair in the map resolves — it already does.
-- Repos under `~/bootdev` were outside the personal-identity include — landed
-  2026-09-18. `bookbot` was the one with no per-repo `[user]` override, so it
-  resolved to the work address with `commit.gpgsign = true`, and its next commit
-  would have taken both. The same failure had already happened once, and was
-  only recoverable because the repo had never been pushed.
-
-  Fixed by moving the whole directory map out of this repo. The conditional
-  includes now live at the end of `~/.gitconfig.local`, after its `[user]` block
-  so they win, and cover `~/hobby/` and `~/bootdev/`. `gitconfig` here keeps the
-  plain `[include]` and a comment saying why the map is not in it:
-  an `includeIf "gitdir:..."` names a path in a home directory, which is one
-  machine's layout rather than a portable setting, and this file is public.
-  `gitconfig-personal` was rewritten to say *what* a personal repo commits as
-  and stay silent on *where* those repos are.
-
-  _Checked 2026-09-18: `git config --get user.email` and `--get
-  commit.gpgsign` across all thirteen checkouts — the eight under `~/hobby` and
-  `~/bootdev` return the personal address and `false`, the five under `~/mine`,
-  `~/notes` and `~/src` return the work address and `true`. A throwaway `git
-  init` outside both trees still returns the work identity, so the scoping is
-  not over-broad. `git config --show-origin` names
-  `~/.gitconfig-personal` as the source in `bookbot`._
-- `includeIf` repointed from `~/github/` to `~/hobby/` — landed before
-  `6a09b2c`, when the personal repos moved. It did not follow the repos that
-  went to `~/bootdev`; that is what the entry above fixes.
-- Git identity and signing for personal repos — landed 2026-09-05: a tracked
-  `gitconfig-personal` sets the personal address and turns `commit.gpgsign` and
-  `tag.gpgsign` off, included *after* `~/.gitconfig.local` so it wins.
-- `gitconfig` tracked but never synced, and a stub — landed 2026-09-05: split
-  into a portable file and a `~/.gitconfig.local` include, both real.
-- `~/.gitignore_global` untracked — landed 2026-09-05.
-- No CI — landed 2026-09-05.
 
 ## Not looked at
 
