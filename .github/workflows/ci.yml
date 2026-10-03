@@ -1,7 +1,7 @@
 name: CI
 
-# Pull requests as well as pushes, because a check that only runs after the
-# push has already landed reports a problem that is already in main.
+# Syntax checks only. The files are examples, so the useful check is that each
+# one still parses.
 on:
   push:
     branches: [main]
@@ -9,71 +9,25 @@ on:
 
 jobs:
   checks:
-    name: Check the scripts and the sync map
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    name: Check that each example parses
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # ubuntu-latest ships shellcheck; macos-latest does not.
-      - if: runner.os == 'macOS'
-        run: brew install shellcheck
-
-      # shellcheck understands bash, not zsh. `scripts/` is bash and gets the
-      # full treatment; the zsh files get a syntax check from zsh itself, which
-      # is the most any linter will do for them -- `zshrc` uses glob qualifiers
-      # like `(#qN.mh+24)` that shellcheck cannot parse at all.
-      - run: shellcheck scripts/*.sh
-
-      # zsh ships with macOS. Linux needs it installed to run the syntax check
-      # below.
-      - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y zsh
+      # shellcheck cannot parse zsh (`zshrc` uses glob qualifiers like
+      # `(#qN.mh+24)`), so zsh itself does the syntax check.
+      - run: sudo apt-get update && sudo apt-get install --no-install-recommends -y zsh neovim
       - run: zsh -n zshrc
-      - run: zsh -n zsh-functions.zsh
 
-      # Neither runner ships Neovim, which the init.lua check below needs.
-      - if: runner.os == 'Linux'
-        run: sudo apt-get install --no-install-recommends -y neovim
-      - if: runner.os == 'macOS'
-        run: brew install neovim
-
-      # The map in scripts/configs.sh names a repo-side file for each config.
-      # A typo there is invisible until someone runs sync.sh and it quietly
-      # skips a file, so check the repo half of every pair resolves.
-      - name: Every file in the sync map exists
-        shell: bash
+      # loadfile() compiles the file without running it, so this never reaches
+      # lazy.nvim or the network. cquit sets the exit code; a plain
+      # command-line error from nvim does not.
+      - name: nvim/init.lua parses
         run: |
-          set -eu
-          source scripts/configs.sh
-          status=0
-          for entry in "${CONFIGS[@]}"; do
-            repo_path="${entry%%:*}"
-            if [ ! -f "$repo_path" ]; then
-              echo "Missing from the repo: $repo_path" >&2
-              status=1
-            fi
-          done
-          exit $status
+          nvim --headless --clean -u NONE -c "lua local ok, err = loadfile('nvim/init.lua'); if ok then vim.cmd('cquit 0') else print(err); vim.cmd('cquit 1') end"
 
-      # configs.sh picks stat's GNU form or its BSD one depending on which
-      # succeeds; run it for real so both runners exercise their half.
-      - name: configs.sh mtime returns a number
-        shell: bash
-        run: |
-          set -eu
-          source scripts/configs.sh
-          result=$(mtime "scripts/configs.sh")
-          [[ $result =~ ^[0-9]+$ ]] || { echo "mtime did not return a number: $result" >&2; exit 1; }
+      - name: starship.toml parses
+        run: python3 -c "import tomllib; tomllib.load(open('starship.toml', 'rb'))"
 
-      # loadfile() compiles the file without running it, so this is a syntax
-      # check only -- it never reaches lazy.nvim or the network. cquit sets
-      # the exit code; a plain command-line error from nvim does not.
-      - name: config-nvim/init.lua parses
-        run: |
-          nvim --headless --clean -u NONE -c "lua local ok, err = loadfile('config-nvim/init.lua'); if ok then vim.cmd('cquit 0') else print(err); vim.cmd('cquit 1') end"
-
-      - name: lazy-lock.json is valid JSON
-        run: jq empty config-nvim/lazy-lock.json
+      - name: gitconfig parses
+        run: git config --file gitconfig --list > /dev/null

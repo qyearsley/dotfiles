@@ -1,5 +1,5 @@
-# The portable half of ~/.gitconfig. [user], signing, and anything else
-# host-specific go in ~/.gitconfig.local, included at the bottom.
+# Example ~/.gitconfig, the portable half. [user], signing, and anything else
+# private or host-specific go in ~/.gitconfig.local, included at the bottom.
 
 [init]
 	defaultBranch = main

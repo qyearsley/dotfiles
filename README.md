@@ -1,57 +1,85 @@
 # dotfiles
 
-Zsh, Git, and Neovim configuration for macOS and Linux. One file per tool, kept
-close to defaults.
+Example configs for zsh, Git, Neovim, and the starship prompt, on macOS and
+Linux. Each file stays close to the defaults and explains its choices, so you
+can copy the parts you want.
 
-## Layout
+| File               | Copy to                       |
+| ------------------ | ----------------------------- |
+| `zshrc`            | `~/.zshrc`                    |
+| `gitconfig`        | `~/.gitconfig`                |
+| `gitignore_global` | `~/.gitignore_global`         |
+| `nvim/init.lua`    | `~/.config/nvim/init.lua`     |
+| `starship.toml`    | `~/.config/starship.toml`     |
 
-| Path                            | What it holds                                  |
-| ------------------------------- | ---------------------------------------------- |
-| `zshrc`, `zsh-functions.zsh`    | Interactive shell: completions, history, aliases |
-| `gitconfig`, `gitignore_global` | Git, portable half                             |
-| `config-nvim/`                  | Neovim: `init.lua` and the plugin lockfile     |
-| `starship.toml`                 | Prompt                                         |
-| `scripts/`                      | `sync.sh`, driven by the map in `configs.sh`   |
-
-## Use
+## Set up a new machine
 
 ```bash
-./scripts/sync.sh status   # report drift, change nothing
-./scripts/sync.sh to       # repo -> system
-./scripts/sync.sh from     # system -> repo
+git clone https://github.com/qyearsley/dotfiles.git && cd dotfiles
+cp -i zshrc ~/.zshrc
+cp -i gitconfig ~/.gitconfig
+cp -i gitignore_global ~/.gitignore_global
+mkdir -p ~/.config/nvim && cp -i nvim/init.lua ~/.config/nvim/
+cp -i starship.toml ~/.config/
 ```
 
-Run `status` first. Both sync directions overwrite whole files, and neither
-deletes anything. `sync.sh` prompts before it overwrites a destination that is
-newer than its source; `--yes` skips the prompt. `status` exits non-zero when
-anything differs, so it works as a pre-commit check too.
+Then put your name and email in `~/.gitconfig.local`:
 
-## Local overrides
+```ini
+[user]
+	name = Your Name
+	email = you@example.com
+```
 
-Machine-specific settings stay out of this repo. Each shared file sources its
-local half last, so the local file wins, and a machine without one still works.
-
-| Shared      | Local, untracked                                     |
-| ----------- | ---------------------------------------------------- |
-| `gitconfig` | `~/.gitconfig.local`                                 |
-| `zshrc`     | `~/.zshrc.local` — tokens, host paths, host aliases  |
+`gitconfig` and `zshrc` load `~/.gitconfig.local` and `~/.zshrc.local` last,
+so the local file wins. Keep tokens, host paths, and anything private there.
+Both configs work without them.
 
 ## Requirements
 
-Neovim 0.12+, git-delta, starship, and kubectl for the Kubernetes shell
-functions.
+| Tool      | Needed by                                       |
+| --------- | ----------------------------------------------- |
+| Neovim    | `nvim/init.lua`; 0.12 or later, tested on 0.12.5 |
+| git-delta | `gitconfig` (`core.pager`)                      |
+| starship  | `zshrc` (the prompt; skipped if not installed)  |
+| kubectl   | the `k`, `kns`, and `kx` shortcuts in `zshrc`   |
 
-## Checks
+The Neovim language servers also need Node.js and Python 3.
+
+## Neovim
+
+On the first start, lazy.nvim installs the plugins and Mason installs `lua_ls`,
+`pyright`, and `ts_ls`. Completion is nvim-cmp. There is no tree-sitter plugin:
+Neovim 0.12 bundles parsers for c, lua, markdown, query, vim, and vimdoc, and
+Vim's regex syntax covers the rest. The theme is Kanagawa, which follows the
+terminal background.
+
+Leader is `Space`.
+
+| Keys                        | Action                                              |
+| --------------------------- | --------------------------------------------------- |
+| `gd` `gD` `gi` `gr`         | Definition, declaration, implementation, references |
+| `K`                         | Hover                                               |
+| `<leader>rn`                | Rename                                              |
+| `<leader>ca`                | Code action                                         |
+| `<leader>f`                 | Format                                              |
+| `[g` `]g`                   | Previous, next diagnostic                           |
+| `<leader>ff` `fg` `fb` `fr` | Find files, grep, buffers, recent                   |
+| `[c` `]c`                   | Previous, next git hunk                             |
+| `<leader>gp`                | Preview hunk                                        |
+| `-`                         | File browser                                        |
+| `<C-h/j/k/l>`               | Move between splits                                 |
+| `<Esc>`                     | Clear search highlight                              |
+
+In insert mode, `<C-Space>` opens completion and `<CR>` confirms. `<Tab>` and
+`<S-Tab>` move through the menu.
+
+## Compare with your live configs
+
+There is no sync script. To see where a live config differs from its example:
 
 ```bash
-shellcheck scripts/*.sh          # the bash half
-zsh -n zshrc                     # the zsh half; shellcheck cannot parse it
-zsh -n zsh-functions.zsh
-jq empty config-nvim/lazy-lock.json
+diff zshrc ~/.zshrc
+diff gitconfig ~/.gitconfig
+diff nvim/init.lua ~/.config/nvim/init.lua
 ```
-
-CI runs all of the above on both macOS and Linux, plus a check that every file
-named in the sync map exists, that `config-nvim/init.lua` still parses, and a
-smoke test of the `mtime` helper in `scripts/configs.sh`. `zshrc` uses zsh glob
-qualifiers (`(#qN.mh+24)`) that shellcheck cannot parse, which is why the zsh
-files get a syntax check instead of a lint.

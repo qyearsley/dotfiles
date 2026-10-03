@@ -1,4 +1,4 @@
--- Modern Neovim Configuration
+-- Example Neovim config (~/.config/nvim/init.lua). Copy what you want.
 
 -- Basic Options
 vim.opt.number = true
@@ -46,7 +46,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Plugins
 require("lazy").setup({
-  -- Theme: Kanagawa with lotus (light) variant
+  -- Theme: Kanagawa; the colorscheme is picked at the bottom of this file
   {
     "rebelot/kanagawa.nvim",
     priority = 1000,
