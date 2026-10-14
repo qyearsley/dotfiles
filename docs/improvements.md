@@ -20,3 +20,8 @@ Open defects, debt, and doc drift for this repo, best first.
   by hand, and `diff` shows drift. Do not bring back a sync script.
 - **Plugin lock file.** Removed on 2026-10-03. The lock file stays on each
   machine; the example does not pin plugin versions.
+- **Local tmux config.** There is no `tmux.conf` on purpose. Quinten uses tmux
+  only on remote hosts, through `ssht()` in `~/.zshrc.local`, and this repo
+  cannot deploy to them. Locally he uses iTerm2 tabs and panes.
+- **Git shorthand aliases.** Declined in Aug 2026 (`gs`, `ga`, `gc`, `gp`). He
+  prefers the real command. Removing unused aliases is welcome.
