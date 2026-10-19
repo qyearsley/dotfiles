@@ -101,11 +101,9 @@ require("lazy").setup({
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
         vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
         vim.keymap.set({"n", "v"}, "<leader>ca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, opts)
         -- jump() rather than the goto_prev/goto_next pair, which Neovim removes
         -- in 0.13. No float: virtual_text already prints the diagnostic on the
         -- line you land on.
@@ -212,8 +210,6 @@ require("lazy").setup({
     "lewis6991/gitsigns.nvim",
     event = "BufReadPre",
     keys = {
-      { "]c", "<cmd>Gitsigns next_hunk<CR>",    desc = "Next hunk" },
-      { "[c", "<cmd>Gitsigns prev_hunk<CR>",    desc = "Previous hunk" },
       { "<leader>gp", "<cmd>Gitsigns preview_hunk<CR>", desc = "Preview hunk" },
     },
     config = function()

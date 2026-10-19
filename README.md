@@ -58,14 +58,12 @@ Leader is `Space`.
 
 | Keys                        | Action                                              |
 | --------------------------- | --------------------------------------------------- |
-| `gd` `gD` `gi` `gr`         | Definition, declaration, implementation, references |
+| `gd` `gD` `gi`              | Definition, declaration, implementation             |
 | `K`                         | Hover                                               |
 | `<leader>rn`                | Rename                                              |
 | `<leader>ca`                | Code action                                         |
-| `<leader>f`                 | Format                                              |
 | `[g` `]g`                   | Previous, next diagnostic                           |
 | `<leader>ff` `fg` `fb` `fr` | Find files, grep, buffers, recent                   |
-| `[c` `]c`                   | Previous, next git hunk                             |
 | `<leader>gp`                | Preview hunk                                        |
 | `-`                         | File browser                                        |
 | `<C-h/j/k/l>`               | Move between splits                                 |

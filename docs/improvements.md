@@ -2,23 +2,7 @@
 
 Open defects, debt, and doc drift for this repo, best first.
 
-1. **The LSP `gr` map waits on Neovim's built-in `gr*` maps.** Neovim 0.11+
-   maps `grn`, `gra`, `grr`, and `gri`, so the buffer-local `gr` in
-   `nvim/init.lua` likely waits `timeoutlen` before it fires. Choose: keep it,
-   move references to another key, or use the built-in maps. Update the
-   README key table to match. Neovim 0.12.6 has the built-in maps
-   (2026-10-19); the delay was not measured.
-2. **`<leader>f` (format) is a prefix of the Telescope `<leader>f*` maps.** In
-   an LSP buffer, `on_attach` in `nvim/init.lua` maps `<leader>f`. Neovim then
-   waits `timeoutlen` (300 ms) and formats, so a slow `<leader>ff` can format
-   the buffer. which-key's `delay = 400` is longer than the timeout, so its
-   popup never shows for `<leader>f`. Read from the code; not reproduced.
-   Fix: move format to another key, such as `<leader>cf`, and update the README.
-3. **The gitsigns `]c` and `[c` maps hide the built-in diff jumps.** In
-   `nvim -d` or after `:diffthis`, `]c` runs `Gitsigns next_hunk` instead of
-   jumping to the next difference. Fall back to the built-in when `vim.wo.diff`
-   is set, as the gitsigns README shows. Not reproduced. Verify: `nvim -d a b`,
-   then `]c`.
+Nothing open.
 
 ## Settled
 
@@ -35,3 +19,6 @@ Open defects, debt, and doc drift for this repo, best first.
   installs Ubuntu's apt `neovim` and only compiles `init.lua`, so it does not
   catch a call to a 0.12-only API. Do not add a Neovim install or a plugin load
   to CI.
+- **Unused key maps.** Removed 2026-10-19: the LSP `gr` and `<leader>f` maps
+  and the gitsigns `]c`/`[c` maps. They were not in use, and each one clashed
+  with a built-in or another map. Neovim's own `grr` and `]c` work again.
