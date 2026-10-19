@@ -28,7 +28,6 @@
 
 [delta]
 	navigate = true    # n/N to jump between files in diff output
-	side-by-side = false
 	line-numbers = true
 
 # Machine-specific and personal settings: [user], signing, and any

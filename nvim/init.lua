@@ -6,14 +6,9 @@ vim.opt.cursorline = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
-vim.opt.autoindent = true
 vim.opt.smartindent = true
-vim.opt.joinspaces = false
-vim.opt.hlsearch = true
-vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true  -- case-insensitive search unless the pattern has capitals
-vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 300
 vim.opt.timeoutlen = 300
@@ -88,8 +83,8 @@ require("lazy").setup({
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
-      { "williamboman/mason.nvim" },
-      { "williamboman/mason-lspconfig.nvim" },
+      { "mason-org/mason.nvim" },
+      { "mason-org/mason-lspconfig.nvim" },
       { "hrsh7th/cmp-nvim-lsp" },
     },
     config = function()
@@ -101,8 +96,8 @@ require("lazy").setup({
         ensure_installed = { "lua_ls", "pyright", "ts_ls" },
       })
 
-      local on_attach = function(client, bufnr)
-        local opts = { buffer = bufnr, noremap = true, silent = true }
+      local on_attach = function(_, bufnr)
+        local opts = { buffer = bufnr, silent = true }
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
         vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
@@ -128,10 +123,9 @@ require("lazy").setup({
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+      -- nvim-lspconfig supplies each server's cmd and root markers.
       local lsp_servers = {
         lua_ls = {
-          cmd = { 'lua-language-server' },
-          root_markers = { '.luarc.json', '.luacheckrc', '.stylua.toml', 'stylua.toml' },
           settings = {
             Lua = {
               diagnostics = { globals = { "vim" } },
@@ -144,8 +138,6 @@ require("lazy").setup({
           },
         },
         pyright = {
-          cmd = { 'pyright-langserver', '--stdio' },
-          root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt' },
           settings = {
             python = {
               analysis = {
@@ -156,10 +148,7 @@ require("lazy").setup({
             },
           },
         },
-        ts_ls = {
-          cmd = { 'typescript-language-server', '--stdio' },
-          root_markers = { 'package.json', 'tsconfig.json' },
-        },
+        ts_ls = {},
       }
 
       for server, config in pairs(lsp_servers) do

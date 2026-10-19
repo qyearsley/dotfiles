@@ -39,7 +39,7 @@ Both configs work without them.
 
 | Tool      | Needed by                                       |
 | --------- | ----------------------------------------------- |
-| Neovim    | `nvim/init.lua`; 0.12 or later, tested on 0.12.5 |
+| Neovim    | `nvim/init.lua`; 0.12 or later, tested on 0.12.6 |
 | git-delta | `gitconfig` (`core.pager`)                      |
 | starship  | `zshrc` (the prompt; skipped if not installed)  |
 | kubectl   | the `k`, `kns`, and `kx` shortcuts in `zshrc`   |
@@ -50,9 +50,9 @@ The Neovim language servers also need Node.js and Python 3.
 
 On the first start, lazy.nvim installs the plugins and Mason installs `lua_ls`,
 `pyright`, and `ts_ls`. Completion is nvim-cmp. There is no tree-sitter plugin:
-Neovim 0.12 bundles parsers for c, lua, markdown, query, vim, and vimdoc, and
-Vim's regex syntax covers the rest. The theme is Kanagawa, which follows the
-terminal background.
+Neovim 0.12 bundles parsers for c, lua, markdown, markdown_inline, query, vim,
+and vimdoc, and Vim's regex syntax covers the rest. The theme is Kanagawa, which
+follows the terminal background.
 
 Leader is `Space`.
 

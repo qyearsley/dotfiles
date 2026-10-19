@@ -14,6 +14,8 @@ if [[ -n $ZSH_COMPDUMP(#qN.mh+24) ]]; then
 else
   compinit -C -d "$ZSH_COMPDUMP"  # use cache
 fi
+unsetopt EXTENDED_GLOB     # only the check above needs it; left on, it globs
+                           # git refs such as HEAD^
 
 # History. macOS sets HISTFILE in /etc/zshrc, but zsh has no default for it.
 # Without it, history is never written to disk.

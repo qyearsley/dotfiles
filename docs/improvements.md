@@ -2,52 +2,23 @@
 
 Open defects, debt, and doc drift for this repo, best first.
 
-1. **Let nvim-lspconfig supply `cmd` and `root_markers`.** In `nvim/init.lua`,
-   `lsp_servers` repeats lspconfig's `cmd` values. Its `root_markers` lists
-   leave out `.git`, so a Python file in a repo with no project files gets no
-   root. The ts_ls list has no effect, because lspconfig's ts_ls sets
-   `root_dir`. Fix: keep only `settings`. This widens root detection. Verify:
-   open such a Python file and run `:checkhealth vim.lsp` before and after.
-2. **The LSP `gr` map waits on Neovim's built-in `gr*` maps.** Neovim 0.11+
+1. **The LSP `gr` map waits on Neovim's built-in `gr*` maps.** Neovim 0.11+
    maps `grn`, `gra`, `grr`, and `gri`, so the buffer-local `gr` in
    `nvim/init.lua` likely waits `timeoutlen` before it fires. Choose: keep it,
    move references to another key, or use the built-in maps. Update the
    README key table to match. Neovim 0.12.6 has the built-in maps
    (2026-10-19); the delay was not measured.
-3. **Point the mason plugins at `mason-org`.** `nvim/init.lua` names
-   `williamboman/mason.nvim` and `williamboman/mason-lspconfig.nvim`. The
-   installed mason.nvim README uses `mason-org/mason.nvim` (2026-10-19). The old
-   name likely still redirects; not checked, because github.com was blocked from
-   the session. Verify: `:Lazy sync` after the change.
-4. **Drop settings that repeat Neovim defaults.** `nvim/init.lua` sets
-   `autoindent`, `hlsearch`, `incsearch`, `termguicolors` and
-   `joinspaces = false`, which are already the defaults. In `on_attach`,
-   `noremap = true` has no effect with `vim.keymap.set`, and `client` is unused.
-   The README says the files stay close to the defaults. Verify:
-   `:verbose set hlsearch?` in `nvim --clean`.
-5. **The README and CI disagree on the Neovim version.** The README says
-   "tested on 0.12.5"; 0.12.6 is installed. CI installs Ubuntu's apt `neovim`,
-   which is likely older than 0.12, and only compiles `init.lua` with
-   `loadfile`. So CI does not catch a call to an API that 0.12 lacks. Apt
-   version not checked. The README's list of bundled parsers also leaves out
-   `markdown_inline`, which 0.12.6 ships.
-6. **`<leader>f` (format) is a prefix of the Telescope `<leader>f*` maps.** In
+2. **`<leader>f` (format) is a prefix of the Telescope `<leader>f*` maps.** In
    an LSP buffer, `on_attach` in `nvim/init.lua` maps `<leader>f`. Neovim then
    waits `timeoutlen` (300 ms) and formats, so a slow `<leader>ff` can format
    the buffer. which-key's `delay = 400` is longer than the timeout, so its
    popup never shows for `<leader>f`. Read from the code; not reproduced.
    Fix: move format to another key, such as `<leader>cf`, and update the README.
-7. **The gitsigns `]c` and `[c` maps hide the built-in diff jumps.** In
+3. **The gitsigns `]c` and `[c` maps hide the built-in diff jumps.** In
    `nvim -d` or after `:diffthis`, `]c` runs `Gitsigns next_hunk` instead of
    jumping to the next difference. Fall back to the built-in when `vim.wo.diff`
    is set, as the gitsigns README shows. Not reproduced. Verify: `nvim -d a b`,
    then `]c`.
-8. **`EXTENDED_GLOB` stays on after the compinit check in `zshrc`.** Only the
-   `(#qN.mh+24)` qualifier needs it. With `unsetopt NOMATCH` also set,
-   `git show HEAD^` expands to a file named `HEADx` when one exists
-   (reproduced 2026-10-19 with `zsh -f`). Add `unsetopt EXTENDED_GLOB` after
-   the `fi`. Verify: `setopt | grep -i extendedglob` in a new shell prints
-   nothing.
 
 ## Settled
 
@@ -60,3 +31,7 @@ Open defects, debt, and doc drift for this repo, best first.
   cannot deploy to them. Locally he uses iTerm2 tabs and panes.
 - **Git shorthand aliases.** Declined in Aug 2026 (`gs`, `ga`, `gc`, `gp`). He
   prefers the real command. Removing unused aliases is welcome.
+- **CI stays syntax-only.** Decided 2026-10-19: keep this repo simple. CI
+  installs Ubuntu's apt `neovim` and only compiles `init.lua`, so it does not
+  catch a call to a 0.12-only API. Do not add a Neovim install or a plugin load
+  to CI.
