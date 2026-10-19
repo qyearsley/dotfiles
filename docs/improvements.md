@@ -29,7 +29,25 @@ Open defects, debt, and doc drift for this repo, best first.
    "tested on 0.12.5"; 0.12.6 is installed. CI installs Ubuntu's apt `neovim`,
    which is likely older than 0.12, and only compiles `init.lua` with
    `loadfile`. So CI does not catch a call to an API that 0.12 lacks. Apt
-   version not checked.
+   version not checked. The README's list of bundled parsers also leaves out
+   `markdown_inline`, which 0.12.6 ships.
+6. **`<leader>f` (format) is a prefix of the Telescope `<leader>f*` maps.** In
+   an LSP buffer, `on_attach` in `nvim/init.lua` maps `<leader>f`. Neovim then
+   waits `timeoutlen` (300 ms) and formats, so a slow `<leader>ff` can format
+   the buffer. which-key's `delay = 400` is longer than the timeout, so its
+   popup never shows for `<leader>f`. Read from the code; not reproduced.
+   Fix: move format to another key, such as `<leader>cf`, and update the README.
+7. **The gitsigns `]c` and `[c` maps hide the built-in diff jumps.** In
+   `nvim -d` or after `:diffthis`, `]c` runs `Gitsigns next_hunk` instead of
+   jumping to the next difference. Fall back to the built-in when `vim.wo.diff`
+   is set, as the gitsigns README shows. Not reproduced. Verify: `nvim -d a b`,
+   then `]c`.
+8. **`EXTENDED_GLOB` stays on after the compinit check in `zshrc`.** Only the
+   `(#qN.mh+24)` qualifier needs it. With `unsetopt NOMATCH` also set,
+   `git show HEAD^` expands to a file named `HEADx` when one exists
+   (reproduced 2026-10-19 with `zsh -f`). Add `unsetopt EXTENDED_GLOB` after
+   the `fi`. Verify: `setopt | grep -i extendedglob` in a new shell prints
+   nothing.
 
 ## Settled
 
