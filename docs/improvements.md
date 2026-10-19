@@ -12,7 +12,24 @@ Open defects, debt, and doc drift for this repo, best first.
    maps `grn`, `gra`, `grr`, and `gri`, so the buffer-local `gr` in
    `nvim/init.lua` likely waits `timeoutlen` before it fires. Choose: keep it,
    move references to another key, or use the built-in maps. Update the
-   README key table to match.
+   README key table to match. Neovim 0.12.6 has the built-in maps
+   (2026-10-19); the delay was not measured.
+3. **Point the mason plugins at `mason-org`.** `nvim/init.lua` names
+   `williamboman/mason.nvim` and `williamboman/mason-lspconfig.nvim`. The
+   installed mason.nvim README uses `mason-org/mason.nvim` (2026-10-19). The old
+   name likely still redirects; not checked, because github.com was blocked from
+   the session. Verify: `:Lazy sync` after the change.
+4. **Drop settings that repeat Neovim defaults.** `nvim/init.lua` sets
+   `autoindent`, `hlsearch`, `incsearch`, `termguicolors` and
+   `joinspaces = false`, which are already the defaults. In `on_attach`,
+   `noremap = true` has no effect with `vim.keymap.set`, and `client` is unused.
+   The README says the files stay close to the defaults. Verify:
+   `:verbose set hlsearch?` in `nvim --clean`.
+5. **The README and CI disagree on the Neovim version.** The README says
+   "tested on 0.12.5"; 0.12.6 is installed. CI installs Ubuntu's apt `neovim`,
+   which is likely older than 0.12, and only compiles `init.lua` with
+   `loadfile`. So CI does not catch a call to an API that 0.12 lacks. Apt
+   version not checked.
 
 ## Settled
 
